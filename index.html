@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,62 +18,60 @@
       --warn: #e08c2a; --warn-light: #fef3e2;
       --radius: 14px; --radius-sm: 8px;
     }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-    .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
-    .app-icon { width: 40px; height: 40px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .app-header h1 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; color: var(--text); }
-    .app-header p { font-size: 12px; color: var(--muted); margin-top: 1px; }
-    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    /* Header */
+    .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }
+    .hamburger { background: none; border: none; cursor: pointer; padding: 4px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.25s; }
+    .page-title { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 400; color: var(--text); flex: 1; }
     .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; flex-shrink: 0; transition: background 0.3s; }
     .sync-dot.live { background: var(--formula); }
 
-    .main { max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
-    .drag-hint { text-align: center; font-size: 11px; color: var(--hint); margin-bottom: 10px; letter-spacing: 0.02em; }
+    /* Drawer overlay */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .drawer-overlay.open { opacity: 1; pointer-events: all; }
 
-    .section { margin-bottom: 10px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; user-select: none; }
-    .section.dragging { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: scale(1.01); z-index: 100; opacity: 0.95; }
-    .section.drag-over { border-color: var(--accent); border-style: dashed; }
-    .section-handle { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: grab; background: var(--surface2); touch-action: none; }
-    .section-handle:active { cursor: grabbing; }
-    .handle-dots { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
-    .handle-dots span { display: flex; gap: 3px; }
-    .handle-dots span::before, .handle-dots span::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--hint); display: block; }
-    .section-handle-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-    .section-body { padding: 1.25rem; }
-    .section-body.no-pad { padding: 0; }
+    /* Drawer */
+    .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: var(--surface); z-index: 101; transition: left 0.28s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
+    .drawer.open { left: 0; }
+    .drawer-header { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .drawer-icon { width: 36px; height: 36px; background: var(--accent-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .drawer-title { font-family: 'DM Serif Display', serif; font-size: 17px; font-weight: 400; color: var(--text); }
+    .drawer-subtitle { font-size: 11px; color: var(--muted); }
+    .drawer-nav { padding: 0.75rem 0; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 13px 1.25rem; cursor: pointer; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--surface2); }
+    .nav-item.active { background: var(--accent-light); }
+    .nav-item.active .nav-label { color: var(--accent); font-weight: 500; }
+    .nav-item.active .nav-icon { background: var(--accent-light); }
+    .nav-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .nav-label { font-size: 15px; color: var(--text); }
+    .nav-divider { height: 1px; background: var(--border); margin: 0.5rem 1.25rem; }
+    .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); font-size: 11px; color: var(--hint); }
+
+    /* Pages */
+    .page { display: none; max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+    .page.active { display: block; }
+
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
+    .card-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
 
     /* Last feed banner */
-    .last-feed-banner { padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; transition: background 0.3s; }
-    .last-feed-banner.ok { background: var(--formula-light); }
-    .last-feed-banner.warn { background: var(--warn-light); }
-    .last-feed-banner.alert { background: var(--breast-light); }
-    .banner-icon { font-size: 24px; flex-shrink: 0; }
+    .last-feed-banner { border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 14px; border: 1px solid var(--border); background: var(--surface); transition: all 0.3s; }
+    .last-feed-banner.ok { background: var(--formula-light); border-color: var(--formula); }
+    .last-feed-banner.warn { background: var(--warn-light); border-color: var(--warn); }
+    .last-feed-banner.alert { background: var(--breast-light); border-color: var(--breast); }
+    .banner-icon { font-size: 26px; flex-shrink: 0; }
     .banner-text { flex: 1; }
     .banner-title { font-size: 14px; font-weight: 500; color: var(--text); }
     .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .banner-time { font-size: 22px; font-weight: 600; color: var(--text); white-space: nowrap; }
-
-    /* Chart */
-    .chart-hours { display: flex; gap: 2px; align-items: flex-end; height: 80px; }
-    .chart-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
-    .chart-bar { border-radius: 3px 3px 0 0; min-height: 3px; }
-    .chart-bar.breast { background: var(--breast); }
-    .chart-bar.pumped { background: var(--pumped); }
-    .chart-bar.formula { background: var(--formula); }
-    .chart-labels { display: flex; gap: 2px; margin-top: 4px; }
-    .chart-label { flex: 1; font-size: 9px; color: var(--hint); text-align: center; }
-    .chart-legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .legend-dot.breast { background: var(--breast); }
-    .legend-dot.pumped { background: var(--pumped); }
-    .legend-dot.formula { background: var(--formula); }
-    .chart-empty { text-align: center; padding: 1.5rem; color: var(--hint); font-size: 13px; }
+    .banner-time { font-size: 24px; font-weight: 600; color: var(--text); white-space: nowrap; }
 
     /* Stats */
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
     .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
     .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
 
@@ -98,10 +97,27 @@
     .side-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
     .both-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .both-fields .field { margin-bottom: 0; }
-    .btn-log { width: 100%; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
+    .btn-log { width: 100%; padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
     .btn-log:hover { opacity: 0.9; }
     .btn-log:active { transform: scale(0.98); }
     .btn-log:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Chart */
+    .chart-hours { display: flex; gap: 2px; align-items: flex-end; height: 80px; }
+    .chart-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+    .chart-bar { border-radius: 3px 3px 0 0; min-height: 3px; }
+    .chart-bar.breast { background: var(--breast); }
+    .chart-bar.pumped { background: var(--pumped); }
+    .chart-bar.formula { background: var(--formula); }
+    .chart-labels { display: flex; gap: 2px; margin-top: 4px; }
+    .chart-label { flex: 1; font-size: 9px; color: var(--hint); text-align: center; }
+    .chart-legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-dot.breast { background: var(--breast); }
+    .legend-dot.pumped { background: var(--pumped); }
+    .legend-dot.formula { background: var(--formula); }
+    .chart-empty { text-align: center; padding: 1.5rem; color: var(--hint); font-size: 13px; }
 
     /* History */
     .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -128,157 +144,161 @@
     .btn-del:hover { color: var(--breast); }
 
     .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 14px; line-height: 1.6; }
-    .empty-icon { font-size: 32px; margin-bottom: 10px; }
+    .empty-icon { font-size: 36px; margin-bottom: 10px; }
     .hidden { display: none; }
     .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 14px; }
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--text); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 100; white-space: nowrap; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--text); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 200; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     @media (max-width: 400px) { .field-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
+<!-- Header -->
 <header class="app-header">
-  <div class="app-icon">🍼</div>
-  <div>
-    <h1>Baby Feed Tracker</h1>
-    <p>Shared live tracker</p>
-  </div>
-  <div class="header-right">
-    <div class="sync-dot" id="syncDot"></div>
-  </div>
+  <button class="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="page-title" id="pageTitle">Home</div>
+  <div class="sync-dot" id="syncDot"></div>
 </header>
 
-<div class="main">
-  <div class="drag-hint">Hold and drag the ⠿ handle to reorder sections</div>
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
-  <div id="sections-container">
+<!-- Drawer -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-icon">🍼</div>
+    <div>
+      <div class="drawer-title">Baby Feed Tracker</div>
+      <div class="drawer-subtitle">Shared live tracker</div>
+    </div>
+  </div>
+  <nav class="drawer-nav">
+    <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Home</div>
+    </button>
+    <button class="nav-item" data-page="history" onclick="navigateTo('history')">
+      <div class="nav-icon">📋</div>
+      <div class="nav-label">Feed history</div>
+    </button>
+    <button class="nav-item" data-page="summary" onclick="navigateTo('summary')">
+      <div class="nav-icon">📊</div>
+      <div class="nav-label">Daily summary</div>
+    </button>
+  </nav>
+  <div class="drawer-footer">Feeds are shared in real time</div>
+</div>
 
-    <!-- Last feed banner -->
-    <div class="section" data-id="banner" draggable="true">
-      <div class="section-handle">
-        <div class="handle-dots"><span></span><span></span><span></span></div>
-        <div class="section-handle-title">Last feed</div>
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+
+  <!-- Last feed banner -->
+  <div class="last-feed-banner" id="lastFeedBanner">
+    <div class="banner-icon">🍼</div>
+    <div class="banner-text">
+      <div class="banner-title" id="bannerTitle">Waiting for data...</div>
+      <div class="banner-sub" id="bannerSub"></div>
+    </div>
+    <div class="banner-time" id="bannerTime"></div>
+  </div>
+
+  <!-- Today's stats -->
+  <div class="summary-grid">
+    <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
+    <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
+    <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
+  </div>
+
+  <!-- Log form -->
+  <div class="card">
+    <div class="card-title">Log a feed</div>
+    <div class="field">
+      <label>Who is logging?</label>
+      <div class="select-wrap">
+        <select id="whoLogging">
+          <option value="Mum">Mum</option>
+          <option value="Dad">Dad</option>
+        </select>
       </div>
-      <div class="section-body no-pad">
-        <div class="last-feed-banner" id="lastFeedBanner">
-          <div class="banner-icon">🍼</div>
-          <div class="banner-text">
-            <div class="banner-title" id="bannerTitle">Waiting for data...</div>
-            <div class="banner-sub" id="bannerSub"></div>
-          </div>
-          <div class="banner-time" id="bannerTime"></div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Feed type</label>
+        <div class="select-wrap">
+          <select id="feedType" onchange="updateFields()">
+            <option value="breast">Breast (boob)</option>
+            <option value="pumped">Pumped breast milk</option>
+            <option value="formula">Formula</option>
+          </select>
         </div>
       </div>
-    </div>
-
-    <!-- Daily chart -->
-    <div class="section" data-id="chart" draggable="true">
-      <div class="section-handle">
-        <div class="handle-dots"><span></span><span></span><span></span></div>
-        <div class="section-handle-title">Today's feeds</div>
-      </div>
-      <div class="section-body">
-        <div id="chartWrap"><div class="chart-empty">No feeds logged today yet</div></div>
+      <div class="field">
+        <label>Date &amp; time</label>
+        <input type="datetime-local" id="feedTime" />
       </div>
     </div>
-
-    <!-- Stats -->
-    <div class="section" data-id="stats" draggable="true">
-      <div class="section-handle">
-        <div class="handle-dots"><span></span><span></span><span></span></div>
-        <div class="section-handle-title">Today's summary</div>
+    <div id="breastSideSection">
+      <div class="side-label">Which side?</div>
+      <div class="side-toggle">
+        <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
+        <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
+        <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
       </div>
-      <div class="section-body">
-        <div class="summary-grid">
-          <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
-          <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
-          <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
-        </div>
+      <div id="singleSideField" class="field">
+        <label id="singleSideLabel">Duration — left side</label>
+        <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
+        <div class="unit-hint">minutes on the breast</div>
       </div>
-    </div>
-
-    <!-- Log form -->
-    <div class="section" data-id="form" draggable="true">
-      <div class="section-handle">
-        <div class="handle-dots"><span></span><span></span><span></span></div>
-        <div class="section-handle-title">Log a feed</div>
-      </div>
-      <div class="section-body">
+      <div id="bothSideFields" class="both-fields hidden">
         <div class="field">
-          <label>Who is logging?</label>
-          <div class="select-wrap">
-            <select id="whoLogging">
-              <option value="Mum">Mum</option>
-              <option value="Dad">Dad</option>
-            </select>
-          </div>
+          <label>Duration — left side</label>
+          <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">minutes</div>
         </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Feed type</label>
-            <div class="select-wrap">
-              <select id="feedType" onchange="updateFields()">
-                <option value="breast">Breast (boob)</option>
-                <option value="pumped">Pumped breast milk</option>
-                <option value="formula">Formula</option>
-              </select>
-            </div>
-          </div>
-          <div class="field">
-            <label>Date &amp; time</label>
-            <input type="datetime-local" id="feedTime" />
-          </div>
+        <div class="field">
+          <label>Duration — right side</label>
+          <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">minutes</div>
         </div>
-        <div id="breastSideSection">
-          <div class="side-label">Which side?</div>
-          <div class="side-toggle">
-            <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
-            <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
-            <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
-          </div>
-          <div id="singleSideField" class="field">
-            <label id="singleSideLabel">Duration — left side</label>
-            <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
-            <div class="unit-hint">minutes on the breast</div>
-          </div>
-          <div id="bothSideFields" class="both-fields hidden">
-            <div class="field">
-              <label>Duration — left side</label>
-              <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
-              <div class="unit-hint">minutes</div>
-            </div>
-            <div class="field">
-              <label>Duration — right side</label>
-              <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
-              <div class="unit-hint">minutes</div>
-            </div>
-          </div>
-        </div>
-        <div id="mlSection" class="field hidden">
-          <label>Amount</label>
-          <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
-          <div class="unit-hint">millilitres (ml)</div>
-        </div>
-        <button class="btn-log" id="logBtn" onclick="logFeed()">Log feed</button>
       </div>
     </div>
-
-    <!-- History -->
-    <div class="section" data-id="history" draggable="true">
-      <div class="section-handle">
-        <div class="handle-dots"><span></span><span></span><span></span></div>
-        <div class="section-handle-title">Feed history</div>
-      </div>
-      <div class="section-body">
-        <div class="log-header">
-          <span style="font-size:13px;color:var(--muted);">All logged feeds</span>
-          <button class="btn-clear" onclick="clearAll()">Clear all</button>
-        </div>
-        <div class="log-list" id="logList"><div class="loading">Connecting to database...</div></div>
-      </div>
+    <div id="mlSection" class="field hidden">
+      <label>Amount</label>
+      <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
+      <div class="unit-hint">millilitres (ml)</div>
     </div>
+    <button class="btn-log" id="logBtn" onclick="logFeed()">Log feed</button>
+  </div>
 
+</div>
+
+<!-- HISTORY PAGE -->
+<div class="page" id="page-history">
+  <div class="card">
+    <div class="log-header">
+      <span style="font-size:13px;color:var(--muted);">All logged feeds</span>
+      <button class="btn-clear" onclick="clearAll()">Clear all</button>
+    </div>
+    <div class="log-list" id="logList"><div class="loading">Connecting to database...</div></div>
+  </div>
+</div>
+
+<!-- SUMMARY PAGE -->
+<div class="page" id="page-summary">
+  <div class="card">
+    <div class="card-title">Today's feeds by hour</div>
+    <div id="chartWrap"><div class="chart-empty">No feeds logged today yet</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Today's totals</div>
+    <div class="summary-grid" style="margin-bottom:0;">
+      <div class="stat"><div class="stat-val" id="totalFeeds2">0</div><div class="stat-lbl">Feeds today</div></div>
+      <div class="stat"><div class="stat-val" id="totalMl2">0 ml</div><div class="stat-lbl">Milk today</div></div>
+      <div class="stat"><div class="stat-val" id="totalMin2">0 min</div><div class="stat-lbl">Breast time</div></div>
+    </div>
   </div>
 </div>
 
@@ -304,97 +324,29 @@
   let selectedSide = 'left';
   let allFeeds = [];
 
-  // ---- DRAG AND DROP ----
-  const container = document.getElementById('sections-container');
-  let dragEl = null;
-  let dragOverEl = null;
+  // ---- NAVIGATION ----
+  const pageTitles = { home: 'Home', history: 'Feed history', summary: 'Daily summary' };
 
-  function saveSectionOrder() {
-    const order = [...container.querySelectorAll('.section')].map(s => s.dataset.id);
-    try { localStorage.setItem('sectionOrder', JSON.stringify(order)); } catch(e) {}
+  window.toggleDrawer = function() {
+    document.getElementById('drawer').classList.toggle('open');
+    document.getElementById('drawerOverlay').classList.toggle('open');
   }
 
-  function restoreSectionOrder() {
-    try {
-      const saved = localStorage.getItem('sectionOrder');
-      if (!saved) return;
-      JSON.parse(saved).forEach(id => {
-        const el = container.querySelector(`[data-id="${id}"]`);
-        if (el) container.appendChild(el);
-      });
-    } catch(e) {}
+  window.closeDrawer = function() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('open');
   }
 
-  container.addEventListener('dragstart', e => {
-    dragEl = e.target.closest('.section');
-    if (!dragEl) return;
-    dragEl.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-  });
+  window.navigateTo = function(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelector(`[data-page="${page}"]`).classList.add('active');
+    document.getElementById('pageTitle').textContent = pageTitles[page];
+    closeDrawer();
+  }
 
-  container.addEventListener('dragend', () => {
-    if (dragEl) dragEl.classList.remove('dragging');
-    if (dragOverEl) dragOverEl.classList.remove('drag-over');
-    dragEl = null; dragOverEl = null;
-    saveSectionOrder();
-  });
-
-  container.addEventListener('dragover', e => {
-    e.preventDefault();
-    const target = e.target.closest('.section');
-    if (!target || target === dragEl) return;
-    if (dragOverEl) dragOverEl.classList.remove('drag-over');
-    dragOverEl = target;
-    dragOverEl.classList.add('drag-over');
-    const rect = target.getBoundingClientRect();
-    if (e.clientY < rect.top + rect.height / 2) container.insertBefore(dragEl, target);
-    else container.insertBefore(dragEl, target.nextSibling);
-  });
-
-  // Touch drag
-  let touchEl = null, touchClone = null, touchOffsetY = 0;
-
-  container.addEventListener('touchstart', e => {
-    const handle = e.target.closest('.section-handle');
-    if (!handle) return;
-    touchEl = handle.closest('.section');
-    const touch = e.touches[0];
-    const rect = touchEl.getBoundingClientRect();
-    touchOffsetY = touch.clientY - rect.top;
-    touchClone = touchEl.cloneNode(true);
-    touchClone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.9;z-index:999;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,0.15);transform:scale(1.01);`;
-    document.body.appendChild(touchClone);
-    touchEl.style.opacity = '0.3';
-  }, { passive: true });
-
-  document.addEventListener('touchmove', e => {
-    if (!touchEl || !touchClone) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
-    const sections = [...container.querySelectorAll('.section')].filter(s => s !== touchEl);
-    sections.forEach(s => s.classList.remove('drag-over'));
-    const target = sections.find(s => { const r = s.getBoundingClientRect(); return touch.clientY >= r.top && touch.clientY <= r.bottom; });
-    if (target) {
-      const rect = target.getBoundingClientRect();
-      if (touch.clientY < rect.top + rect.height / 2) container.insertBefore(touchEl, target);
-      else container.insertBefore(touchEl, target.nextSibling);
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchend', () => {
-    if (!touchEl) return;
-    touchEl.style.opacity = '';
-    if (touchClone) { touchClone.remove(); touchClone = null; }
-    container.querySelectorAll('.drag-over').forEach(s => s.classList.remove('drag-over'));
-    touchEl = null;
-    saveSectionOrder();
-  });
-
-  restoreSectionOrder();
-
-  // ---- APP LOGIC ----
-
+  // ---- FORM ----
   function setNow() {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
@@ -404,7 +356,9 @@
 
   window.selectSide = function(side) {
     selectedSide = side;
-    ['left','right','both'].forEach(s => document.getElementById('btn'+s.charAt(0).toUpperCase()+s.slice(1)).classList.toggle('active', s===side));
+    document.getElementById('btnLeft').classList.toggle('active', side === 'left');
+    document.getElementById('btnRight').classList.toggle('active', side === 'right');
+    document.getElementById('btnBoth').classList.toggle('active', side === 'both');
     if (side === 'both') {
       document.getElementById('singleSideField').classList.add('hidden');
       document.getElementById('bothSideFields').classList.remove('hidden');
@@ -457,7 +411,7 @@
       ['feedAmount','feedAmountLeft','feedAmountRight','feedAmountMl'].forEach(id => document.getElementById(id).value = '');
       setNow();
       showToast('Feed logged!');
-    } catch(e) { showToast('Error saving — check connection.'); }
+    } catch(e) { showToast('Error saving — check connection.'); console.error(e); }
     btn.disabled = false; btn.textContent = 'Log feed';
   }
 
@@ -468,6 +422,7 @@
 
   window.clearAll = function() { showToast('Use the ✕ button to delete individual feeds.'); }
 
+  // ---- BANNER ----
   function timeAgo(date) {
     const diffMins = Math.floor((new Date() - date) / 60000);
     const h = Math.floor(diffMins / 60);
@@ -482,7 +437,6 @@
     const title = document.getElementById('bannerTitle');
     const sub = document.getElementById('bannerSub');
     const timeEl = document.getElementById('bannerTime');
-
     if (!lastFeed) {
       banner.className = 'last-feed-banner';
       title.textContent = 'No feeds logged yet';
@@ -490,31 +444,22 @@
       timeEl.textContent = '';
       return;
     }
-
     const feedDate = new Date(lastFeed.time);
     const ago = timeAgo(feedDate);
     const who = lastFeed.who ? ' by ' + lastFeed.who : '';
     const type = lastFeed.type === 'breast' ? 'Breast' : lastFeed.type === 'pumped' ? 'Pumped milk' : 'Formula';
-
     timeEl.textContent = ago.display;
     title.textContent = 'Last feed — ' + type + who;
     sub.textContent = feedDate.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-    banner.className = 'last-feed-banner';
-    if (ago.mins < 120) banner.classList.add('ok');
-    else if (ago.mins < 180) banner.classList.add('warn');
-    else banner.classList.add('alert');
+    banner.className = 'last-feed-banner' + (ago.mins < 120 ? ' ok' : ago.mins < 180 ? ' warn' : ' alert');
   }
 
+  // ---- CHART ----
   function renderChart(todayFeeds) {
     const wrap = document.getElementById('chartWrap');
     if (todayFeeds.length === 0) { wrap.innerHTML = '<div class="chart-empty">No feeds logged today yet</div>'; return; }
     const hours = Array.from({length:24}, () => ({ breast:0, pumped:0, formula:0, total:0 }));
-    todayFeeds.forEach(f => {
-      const h = new Date(f.time).getHours();
-      hours[h][f.type]++;
-      hours[h].total++;
-    });
+    todayFeeds.forEach(f => { const h = new Date(f.time).getHours(); hours[h][f.type]++; hours[h].total++; });
     const maxTotal = Math.max(...hours.map(h => h.total), 1);
     const bh = 70;
     let bars = '', labels = '';
@@ -532,6 +477,7 @@
     wrap.innerHTML = `<div class="chart-hours">${bars}</div><div class="chart-labels">${labels}</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot breast"></div>Breast</div><div class="legend-item"><div class="legend-dot pumped"></div>Pumped</div><div class="legend-item"><div class="legend-dot formula"></div>Formula</div></div>`;
   }
 
+  // ---- RENDER ----
   function isToday(str) { return new Date(str).toDateString() === new Date().toDateString(); }
   function typeLabel(f) { return f.type==='pumped'?'Pumped milk':f.type==='formula'?'Formula':'Breast'; }
   function sideLabel(f) { if(f.type!=='breast')return null; return f.side==='both'?'both sides':f.side+' side'; }
@@ -547,24 +493,31 @@
 
   function renderFeeds(feeds) {
     allFeeds = feeds;
-
-    // Sort by actual feed time descending to find the true most recent feed
-    const sortedByTime = [...feeds].sort((a, b) => new Date(b.time) - new Date(a.time));
-    const lastFeed = sortedByTime.length > 0 ? sortedByTime[0] : null;
-
+    const sortedByTime = [...feeds].sort((a,b) => new Date(b.time) - new Date(a.time));
+    const lastFeed = sortedByTime[0] || null;
     const todayFeeds = feeds.filter(f => isToday(f.time));
+
     updateBanner(lastFeed);
     renderChart(todayFeeds);
 
-    document.getElementById('totalFeeds').textContent = todayFeeds.length;
-    document.getElementById('totalMl').textContent = todayFeeds.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0)+' ml';
-    document.getElementById('totalMin').textContent = todayFeeds.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0)+' min';
+    const ml = todayFeeds.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0);
+    const min = todayFeeds.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0);
 
+    // Home stats
+    document.getElementById('totalFeeds').textContent = todayFeeds.length;
+    document.getElementById('totalMl').textContent = ml + ' ml';
+    document.getElementById('totalMin').textContent = min + ' min';
+
+    // Summary page stats
+    document.getElementById('totalFeeds2').textContent = todayFeeds.length;
+    document.getElementById('totalMl2').textContent = ml + ' ml';
+    document.getElementById('totalMin2').textContent = min + ' min';
+
+    // History list
     const list = document.getElementById('logList');
     if (feeds.length === 0) {
-      list.innerHTML = '<div class="empty"><div class="empty-icon">🍼</div>No feeds logged yet.<br>Add your first one above.</div>';
+      list.innerHTML = '<div class="empty"><div class="empty-icon">🍼</div>No feeds logged yet.<br>Go to Home to add your first one.</div>';
     } else {
-      // Display history sorted by feed time descending
       list.innerHTML = sortedByTime.map(f => {
         const dt = formatDateTime(f.time);
         const side = sideLabel(f);
@@ -585,7 +538,12 @@
     }
   }
 
-  setInterval(() => { if (allFeeds.length > 0) { const sorted = [...allFeeds].sort((a,b)=>new Date(b.time)-new Date(a.time)); updateBanner(sorted[0]); } }, 60000);
+  setInterval(() => {
+    if (allFeeds.length > 0) {
+      const sorted = [...allFeeds].sort((a,b) => new Date(b.time) - new Date(a.time));
+      updateBanner(sorted[0]);
+    }
+  }, 60000);
 
   const q = query(feedsCol, orderBy("createdAt", "desc"));
   onSnapshot(q, snapshot => {

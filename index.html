@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,18 +15,66 @@
       --breast: #c0546e; --breast-light: #fceef2;
       --pumped: #5b6abf; --pumped-light: #eef0fb;
       --formula: #3a9e7a; --formula-light: #e6f7f1;
+      --warn: #e08c2a; --warn-light: #fef3e2;
       --radius: 14px; --radius-sm: 8px;
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
     .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
     .app-icon { width: 40px; height: 40px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
     .app-header h1 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; color: var(--text); }
     .app-header p { font-size: 12px; color: var(--muted); margin-top: 1px; }
     .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; margin-left: auto; flex-shrink: 0; transition: background 0.3s; }
     .sync-dot.live { background: var(--formula); }
+
     .main { max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+
+    /* Last feed banner */
+    .last-feed-banner {
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .last-feed-banner.ok { background: var(--formula-light); border-color: var(--formula); }
+    .last-feed-banner.warn { background: var(--warn-light); border-color: var(--warn); }
+    .last-feed-banner.alert { background: var(--breast-light); border-color: var(--breast); }
+    .banner-icon { font-size: 24px; flex-shrink: 0; }
+    .banner-text { flex: 1; }
+    .banner-title { font-size: 14px; font-weight: 500; color: var(--text); }
+    .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .banner-time { font-size: 22px; font-weight: 600; color: var(--text); white-space: nowrap; }
+
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
     .card-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+
+    /* Daily chart */
+    .chart-wrap { margin-bottom: 0.5rem; }
+    .chart-hours { display: flex; gap: 2px; align-items: flex-end; height: 80px; }
+    .chart-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+    .chart-bar {
+      border-radius: 3px 3px 0 0;
+      min-height: 3px;
+      transition: height 0.3s;
+    }
+    .chart-bar.breast { background: var(--breast); }
+    .chart-bar.pumped { background: var(--pumped); }
+    .chart-bar.formula { background: var(--formula); }
+    .chart-labels { display: flex; gap: 2px; margin-top: 4px; }
+    .chart-label { flex: 1; font-size: 9px; color: var(--hint); text-align: center; }
+    .chart-legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-dot.breast { background: var(--breast); }
+    .legend-dot.pumped { background: var(--pumped); }
+    .legend-dot.formula { background: var(--formula); }
+    .chart-empty { text-align: center; padding: 1.5rem; color: var(--hint); font-size: 13px; }
+
     .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
     .field label { font-size: 12px; font-weight: 500; color: var(--muted); }
     .field select, .field input[type="datetime-local"], .field input[type="number"] {
@@ -40,6 +89,7 @@
     .select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 13px; }
     .unit-hint { font-size: 12px; color: var(--hint); margin-top: 3px; }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
     .side-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
     .side-btn { flex: 1; padding: 10px 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: center; }
     .side-btn:hover { border-color: var(--breast); color: var(--breast); }
@@ -47,18 +97,22 @@
     .side-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
     .both-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .both-fields .field { margin-bottom: 0; }
+
     .btn-log { width: 100%; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
     .btn-log:hover { opacity: 0.9; }
     .btn-log:active { transform: scale(0.98); }
     .btn-log:disabled { opacity: 0.5; cursor: not-allowed; }
+
     .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
     .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
     .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
     .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+
     .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .log-header-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
     .btn-clear { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer; }
     .btn-clear:hover { background: var(--surface2); }
+
     .log-list { display: flex; flex-direction: column; gap: 7px; }
     .log-item { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); animation: slideIn 0.2s ease; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
@@ -78,6 +132,7 @@
     .log-time { font-size: 11px; color: var(--hint); white-space: nowrap; text-align: right; line-height: 1.4; }
     .btn-del { background: none; border: none; color: var(--hint); cursor: pointer; font-size: 15px; padding: 0 0 0 4px; line-height: 1; flex-shrink: 0; }
     .btn-del:hover { color: var(--breast); }
+
     .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 14px; line-height: 1.6; }
     .empty-icon { font-size: 32px; margin-bottom: 10px; }
     .hidden { display: none; }
@@ -95,10 +150,37 @@
     <h1>Baby Feed Tracker</h1>
     <p>Shared live tracker</p>
   </div>
-  <div class="sync-dot" id="syncDot" title="Connecting..."></div>
+  <div class="sync-dot" id="syncDot"></div>
 </header>
 
 <div class="main">
+
+  <!-- Last feed banner -->
+  <div class="last-feed-banner" id="lastFeedBanner">
+    <div class="banner-icon">🍼</div>
+    <div class="banner-text">
+      <div class="banner-title" id="bannerTitle">Waiting for data...</div>
+      <div class="banner-sub" id="bannerSub"></div>
+    </div>
+    <div class="banner-time" id="bannerTime"></div>
+  </div>
+
+  <!-- Daily summary chart -->
+  <div class="card">
+    <div class="card-title">Today's feeds</div>
+    <div class="chart-wrap" id="chartWrap">
+      <div class="chart-empty">No feeds logged today yet</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="summary-grid">
+    <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
+    <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
+    <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
+  </div>
+
+  <!-- Log form -->
   <div class="card">
     <div class="card-title">Log a feed</div>
 
@@ -164,12 +246,7 @@
     <button class="btn-log" id="logBtn" onclick="logFeed()">Log feed</button>
   </div>
 
-  <div class="summary-grid">
-    <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
-    <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
-    <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
-  </div>
-
+  <!-- History -->
   <div class="card">
     <div class="log-header">
       <span class="log-header-title">Feed history</span>
@@ -177,6 +254,7 @@
     </div>
     <div class="log-list" id="logList"><div class="loading">Connecting to database...</div></div>
   </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -199,6 +277,7 @@
   const feedsCol = collection(db, "feeds");
 
   let selectedSide = 'left';
+  let timerInterval = null;
 
   function setNow() {
     const now = new Date();
@@ -285,27 +364,117 @@
   }
 
   window.deleteFeed = async function(id) {
-    try {
-      await deleteDoc(doc(db, "feeds", id));
-    } catch(e) {
-      showToast('Error deleting feed.');
-    }
+    try { await deleteDoc(doc(db, "feeds", id)); }
+    catch(e) { showToast('Error deleting feed.'); }
   }
 
   window.clearAll = function() {
     showToast('Use the ✕ button to delete individual feeds.');
   }
 
-  const q = query(feedsCol, orderBy("createdAt", "desc"));
-  onSnapshot(q, (snapshot) => {
-    document.getElementById('syncDot').classList.add('live');
-    const feeds = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderFeeds(feeds);
-  }, (err) => {
-    document.getElementById('syncDot').classList.remove('live');
-    document.getElementById('logList').innerHTML = '<div class="loading">Connection error. Please refresh.</div>';
-    console.error(err);
-  });
+  // Format time ago
+  function timeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHrs = Math.floor(diffMins / 60);
+    const remMins = diffMins % 60;
+    if (diffMins < 1) return { display: 'Just now', hrs: 0, mins: 0 };
+    if (diffHrs === 0) return { display: diffMins + 'm ago', hrs: 0, mins: diffMins };
+    return { display: diffHrs + 'h ' + remMins + 'm ago', hrs: diffHrs, mins: diffMins };
+  }
+
+  function updateBanner(lastFeed) {
+    const banner = document.getElementById('lastFeedBanner');
+    const title = document.getElementById('bannerTitle');
+    const sub = document.getElementById('bannerSub');
+    const time = document.getElementById('bannerTime');
+
+    if (!lastFeed) {
+      banner.className = 'last-feed-banner';
+      title.textContent = 'No feeds logged yet';
+      sub.textContent = 'Log your first feed below';
+      time.textContent = '';
+      return;
+    }
+
+    const feedDate = new Date(lastFeed.time);
+    const ago = timeAgo(feedDate);
+    const who = lastFeed.who ? ' by ' + lastFeed.who : '';
+    const type = lastFeed.type === 'breast' ? 'Breast' : lastFeed.type === 'pumped' ? 'Pumped milk' : 'Formula';
+
+    time.textContent = ago.display;
+    title.textContent = 'Last feed — ' + type + who;
+    sub.textContent = feedDate.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    const totalMins = ago.mins;
+    banner.className = 'last-feed-banner';
+    if (totalMins < 120) banner.classList.add('ok');
+    else if (totalMins < 180) banner.classList.add('warn');
+    else banner.classList.add('alert');
+  }
+
+  // Daily chart
+  function renderChart(todayFeeds) {
+    const wrap = document.getElementById('chartWrap');
+    if (todayFeeds.length === 0) {
+      wrap.innerHTML = '<div class="chart-empty">No feeds logged today yet</div>';
+      return;
+    }
+
+    // 24 hours, group feeds by hour
+    const hours = Array.from({length: 24}, (_, i) => ({ hour: i, breast: 0, pumped: 0, formula: 0, total: 0 }));
+    todayFeeds.forEach(f => {
+      const h = new Date(f.time).getHours();
+      if (f.type === 'breast') hours[h].breast++;
+      else if (f.type === 'pumped') hours[h].pumped++;
+      else hours[h].formula++;
+      hours[h].total++;
+    });
+
+    const maxTotal = Math.max(...hours.map(h => h.total), 1);
+    const barHeight = 70;
+
+    // Only show hours 6am to now+1, or all 24 if needed
+    const nowHour = new Date().getHours();
+    const startHour = 0;
+    const endHour = 23;
+
+    let barsHtml = '';
+    let labelsHtml = '';
+
+    for (let i = startHour; i <= endHour; i++) {
+      const h = hours[i];
+      const totalH = (h.total / maxTotal) * barHeight;
+      const breastH = (h.breast / maxTotal) * barHeight;
+      const pumpedH = (h.pumped / maxTotal) * barHeight;
+      const formulaH = (h.formula / maxTotal) * barHeight;
+
+      barsHtml += `<div class="chart-bar-col" title="${i}:00 — ${h.total} feed${h.total !== 1 ? 's' : ''}">`;
+      if (h.formula > 0) barsHtml += `<div class="chart-bar formula" style="height:${formulaH}px"></div>`;
+      if (h.pumped > 0) barsHtml += `<div class="chart-bar pumped" style="height:${pumpedH}px"></div>`;
+      if (h.breast > 0) barsHtml += `<div class="chart-bar breast" style="height:${breastH}px"></div>`;
+      if (h.total === 0) barsHtml += `<div style="height:2px;background:var(--border);border-radius:1px;"></div>`;
+      barsHtml += `</div>`;
+
+      const label = i === 0 ? '12a' : i < 12 ? i + 'a' : i === 12 ? '12p' : (i-12) + 'p';
+      const showLabel = i % 4 === 0;
+      labelsHtml += `<div class="chart-label">${showLabel ? label : ''}</div>`;
+    }
+
+    wrap.innerHTML = `
+      <div class="chart-hours">${barsHtml}</div>
+      <div class="chart-labels">${labelsHtml}</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot breast"></div>Breast</div>
+        <div class="legend-item"><div class="legend-dot pumped"></div>Pumped</div>
+        <div class="legend-item"><div class="legend-dot formula"></div>Formula</div>
+      </div>`;
+  }
+
+  function isToday(str) {
+    return new Date(str).toDateString() === new Date().toDateString();
+  }
 
   function typeLabel(f) {
     if (f.type === 'pumped') return 'Pumped milk';
@@ -332,17 +501,34 @@
 
   function formatDateTime(str) {
     const d = new Date(str);
-    const date = d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
-    const time = d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
-    return { date, time };
+    return {
+      date: d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }),
+      time: d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true })
+    };
   }
 
-  function isToday(str) {
-    return new Date(str).toDateString() === new Date().toDateString();
-  }
+  let allFeeds = [];
 
   function renderFeeds(feeds) {
+    allFeeds = feeds;
     const list = document.getElementById('logList');
+    const todayFeeds = feeds.filter(f => isToday(f.time));
+
+    // Update last feed banner
+    const lastFeed = feeds.length > 0 ? feeds[0] : null;
+    updateBanner(lastFeed);
+
+    // Update chart
+    renderChart(todayFeeds);
+
+    // Update stats
+    document.getElementById('totalFeeds').textContent = todayFeeds.length;
+    const ml = todayFeeds.filter(f => f.type !== 'breast').reduce((s, f) => s + f.amount, 0);
+    document.getElementById('totalMl').textContent = ml + ' ml';
+    const min = todayFeeds.filter(f => f.type === 'breast').reduce((s, f) => s + f.amount, 0);
+    document.getElementById('totalMin').textContent = min + ' min';
+
+    // Render list
     if (feeds.length === 0) {
       list.innerHTML = '<div class="empty"><div class="empty-icon">🍼</div>No feeds logged yet.<br>Add your first one above.</div>';
     } else {
@@ -364,14 +550,24 @@
         </div>`;
       }).join('');
     }
-
-    const todayFeeds = feeds.filter(f => isToday(f.time));
-    document.getElementById('totalFeeds').textContent = todayFeeds.length;
-    const ml = todayFeeds.filter(f => f.type !== 'breast').reduce((s, f) => s + f.amount, 0);
-    document.getElementById('totalMl').textContent = ml + ' ml';
-    const min = todayFeeds.filter(f => f.type === 'breast').reduce((s, f) => s + f.amount, 0);
-    document.getElementById('totalMin').textContent = min + ' min';
   }
+
+  // Update banner every minute so "time ago" stays current
+  setInterval(() => {
+    if (allFeeds.length > 0) updateBanner(allFeeds[0]);
+  }, 60000);
+
+  // Real-time listener
+  const q = query(feedsCol, orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    document.getElementById('syncDot').classList.add('live');
+    const feeds = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderFeeds(feeds);
+  }, (err) => {
+    document.getElementById('syncDot').classList.remove('live');
+    document.getElementById('logList').innerHTML = '<div class="loading">Connection error. Please refresh.</div>';
+    console.error(err);
+  });
 
   function showToast(msg) {
     const t = document.getElementById('toast');

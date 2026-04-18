@@ -23,48 +23,40 @@
     .app-icon { width: 40px; height: 40px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
     .app-header h1 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; color: var(--text); }
     .app-header p { font-size: 12px; color: var(--muted); margin-top: 1px; }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; margin-left: auto; flex-shrink: 0; transition: background 0.3s; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; flex-shrink: 0; transition: background 0.3s; }
     .sync-dot.live { background: var(--formula); }
 
     .main { max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+    .drag-hint { text-align: center; font-size: 11px; color: var(--hint); margin-bottom: 10px; letter-spacing: 0.02em; }
+
+    .section { margin-bottom: 10px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; user-select: none; }
+    .section.dragging { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: scale(1.01); z-index: 100; opacity: 0.95; }
+    .section.drag-over { border-color: var(--accent); border-style: dashed; }
+    .section-handle { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: grab; background: var(--surface2); touch-action: none; }
+    .section-handle:active { cursor: grabbing; }
+    .handle-dots { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+    .handle-dots span { display: flex; gap: 3px; }
+    .handle-dots span::before, .handle-dots span::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--hint); display: block; }
+    .section-handle-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .section-body { padding: 1.25rem; }
+    .section-body.no-pad { padding: 0; }
 
     /* Last feed banner */
-    .last-feed-banner { border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); background: var(--surface); transition: background 0.3s, border-color 0.3s; }
-    .last-feed-banner.ok { background: var(--formula-light); border-color: var(--formula); }
-    .last-feed-banner.warn { background: var(--warn-light); border-color: var(--warn); }
-    .last-feed-banner.alert { background: var(--breast-light); border-color: var(--breast); }
+    .last-feed-banner { padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; transition: background 0.3s; }
+    .last-feed-banner.ok { background: var(--formula-light); }
+    .last-feed-banner.warn { background: var(--warn-light); }
+    .last-feed-banner.alert { background: var(--breast-light); }
     .banner-icon { font-size: 24px; flex-shrink: 0; }
     .banner-text { flex: 1; }
     .banner-title { font-size: 14px; font-weight: 500; color: var(--text); }
     .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
     .banner-time { font-size: 22px; font-weight: 600; color: var(--text); white-space: nowrap; }
 
-    /* Smart alarm button */
-    .alarm-btn-wrap { margin-bottom: 1rem; }
-    .btn-alarm {
-      width: 100%; padding: 12px 16px;
-      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-      border-radius: var(--radius); border: 1px solid var(--border);
-      background: var(--surface); color: var(--muted);
-      cursor: pointer; display: flex; align-items: center; gap: 10px;
-      transition: all 0.15s; text-align: left;
-    }
-    .btn-alarm:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-    .btn-alarm.active { border-color: var(--formula); color: var(--formula); background: var(--formula-light); }
-    .btn-alarm-icon { font-size: 18px; flex-shrink: 0; }
-    .btn-alarm-text { flex: 1; }
-    .btn-alarm-title { font-size: 14px; font-weight: 500; }
-    .btn-alarm-sub { font-size: 11px; opacity: 0.8; margin-top: 1px; }
-    .btn-alarm-arrow { font-size: 16px; flex-shrink: 0; }
-
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
-    .card-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
-
     /* Chart */
-    .chart-wrap { margin-bottom: 0.5rem; }
     .chart-hours { display: flex; gap: 2px; align-items: flex-end; height: 80px; }
-    .chart-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; cursor: default; }
-    .chart-bar { border-radius: 3px 3px 0 0; min-height: 3px; transition: height 0.3s; }
+    .chart-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+    .chart-bar { border-radius: 3px 3px 0 0; min-height: 3px; }
     .chart-bar.breast { background: var(--breast); }
     .chart-bar.pumped { background: var(--pumped); }
     .chart-bar.formula { background: var(--formula); }
@@ -78,6 +70,13 @@
     .legend-dot.formula { background: var(--formula); }
     .chart-empty { text-align: center; padding: 1.5rem; color: var(--hint); font-size: 13px; }
 
+    /* Stats */
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
+    .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+
+    /* Form */
     .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
     .field label { font-size: 12px; font-weight: 500; color: var(--muted); }
     .field select, .field input[type="datetime-local"], .field input[type="number"] {
@@ -99,22 +98,15 @@
     .side-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
     .both-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .both-fields .field { margin-bottom: 0; }
-
     .btn-log { width: 100%; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
     .btn-log:hover { opacity: 0.9; }
     .btn-log:active { transform: scale(0.98); }
     .btn-log:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
-    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
-    .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
-    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
-
+    /* History */
     .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .log-header-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
     .btn-clear { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer; }
     .btn-clear:hover { background: var(--surface2); }
-
     .log-list { display: flex; flex-direction: column; gap: 7px; }
     .log-item { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); animation: slideIn 0.2s ease; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
@@ -152,123 +144,142 @@
     <h1>Baby Feed Tracker</h1>
     <p>Shared live tracker</p>
   </div>
-  <div class="sync-dot" id="syncDot"></div>
+  <div class="header-right">
+    <div class="sync-dot" id="syncDot"></div>
+  </div>
 </header>
 
 <div class="main">
+  <div class="drag-hint">Hold and drag the ⠿ handle to reorder sections</div>
 
-  <!-- Last feed banner -->
-  <div class="last-feed-banner" id="lastFeedBanner">
-    <div class="banner-icon">🍼</div>
-    <div class="banner-text">
-      <div class="banner-title" id="bannerTitle">Waiting for data...</div>
-      <div class="banner-sub" id="bannerSub"></div>
-    </div>
-    <div class="banner-time" id="bannerTime"></div>
-  </div>
+  <div id="sections-container">
 
-  <!-- Smart alarm button -->
-  <div class="alarm-btn-wrap">
-    <button class="btn-alarm" id="alarmBtn" onclick="setSmartAlarm()">
-      <div class="btn-alarm-icon">⏰</div>
-      <div class="btn-alarm-text">
-        <div class="btn-alarm-title" id="alarmBtnTitle">Set 3hr feed reminder</div>
-        <div class="btn-alarm-sub" id="alarmBtnSub">Tap to open your clock app with the time pre-set</div>
+    <!-- Last feed banner -->
+    <div class="section" data-id="banner" draggable="true">
+      <div class="section-handle">
+        <div class="handle-dots"><span></span><span></span><span></span></div>
+        <div class="section-handle-title">Last feed</div>
       </div>
-      <div class="btn-alarm-arrow">→</div>
-    </button>
-  </div>
-
-  <!-- Daily summary chart -->
-  <div class="card">
-    <div class="card-title">Today's feeds</div>
-    <div class="chart-wrap" id="chartWrap">
-      <div class="chart-empty">No feeds logged today yet</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="summary-grid">
-    <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
-    <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
-    <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
-  </div>
-
-  <!-- Log form -->
-  <div class="card">
-    <div class="card-title">Log a feed</div>
-
-    <div class="field">
-      <label>Who is logging?</label>
-      <div class="select-wrap">
-        <select id="whoLogging">
-          <option value="Mum">Mum</option>
-          <option value="Dad">Dad</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label>Feed type</label>
-        <div class="select-wrap">
-          <select id="feedType" onchange="updateFields()">
-            <option value="breast">Breast (boob)</option>
-            <option value="pumped">Pumped breast milk</option>
-            <option value="formula">Formula</option>
-          </select>
+      <div class="section-body no-pad">
+        <div class="last-feed-banner" id="lastFeedBanner">
+          <div class="banner-icon">🍼</div>
+          <div class="banner-text">
+            <div class="banner-title" id="bannerTitle">Waiting for data...</div>
+            <div class="banner-sub" id="bannerSub"></div>
+          </div>
+          <div class="banner-time" id="bannerTime"></div>
         </div>
       </div>
-      <div class="field">
-        <label>Date &amp; time</label>
-        <input type="datetime-local" id="feedTime" />
+    </div>
+
+    <!-- Daily chart -->
+    <div class="section" data-id="chart" draggable="true">
+      <div class="section-handle">
+        <div class="handle-dots"><span></span><span></span><span></span></div>
+        <div class="section-handle-title">Today's feeds</div>
+      </div>
+      <div class="section-body">
+        <div id="chartWrap"><div class="chart-empty">No feeds logged today yet</div></div>
       </div>
     </div>
 
-    <div id="breastSideSection">
-      <div class="side-label">Which side?</div>
-      <div class="side-toggle">
-        <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
-        <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
-        <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
+    <!-- Stats -->
+    <div class="section" data-id="stats" draggable="true">
+      <div class="section-handle">
+        <div class="handle-dots"><span></span><span></span><span></span></div>
+        <div class="section-handle-title">Today's summary</div>
       </div>
-      <div id="singleSideField" class="field">
-        <label id="singleSideLabel">Duration — left side</label>
-        <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
-        <div class="unit-hint">minutes on the breast</div>
+      <div class="section-body">
+        <div class="summary-grid">
+          <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
+          <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
+          <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
+        </div>
       </div>
-      <div id="bothSideFields" class="both-fields hidden">
+    </div>
+
+    <!-- Log form -->
+    <div class="section" data-id="form" draggable="true">
+      <div class="section-handle">
+        <div class="handle-dots"><span></span><span></span><span></span></div>
+        <div class="section-handle-title">Log a feed</div>
+      </div>
+      <div class="section-body">
         <div class="field">
-          <label>Duration — left side</label>
-          <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
-          <div class="unit-hint">minutes</div>
+          <label>Who is logging?</label>
+          <div class="select-wrap">
+            <select id="whoLogging">
+              <option value="Mum">Mum</option>
+              <option value="Dad">Dad</option>
+            </select>
+          </div>
         </div>
-        <div class="field">
-          <label>Duration — right side</label>
-          <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
-          <div class="unit-hint">minutes</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Feed type</label>
+            <div class="select-wrap">
+              <select id="feedType" onchange="updateFields()">
+                <option value="breast">Breast (boob)</option>
+                <option value="pumped">Pumped breast milk</option>
+                <option value="formula">Formula</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Date &amp; time</label>
+            <input type="datetime-local" id="feedTime" />
+          </div>
         </div>
+        <div id="breastSideSection">
+          <div class="side-label">Which side?</div>
+          <div class="side-toggle">
+            <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
+            <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
+            <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
+          </div>
+          <div id="singleSideField" class="field">
+            <label id="singleSideLabel">Duration — left side</label>
+            <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
+            <div class="unit-hint">minutes on the breast</div>
+          </div>
+          <div id="bothSideFields" class="both-fields hidden">
+            <div class="field">
+              <label>Duration — left side</label>
+              <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
+              <div class="unit-hint">minutes</div>
+            </div>
+            <div class="field">
+              <label>Duration — right side</label>
+              <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
+              <div class="unit-hint">minutes</div>
+            </div>
+          </div>
+        </div>
+        <div id="mlSection" class="field hidden">
+          <label>Amount</label>
+          <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">millilitres (ml)</div>
+        </div>
+        <button class="btn-log" id="logBtn" onclick="logFeed()">Log feed</button>
       </div>
     </div>
 
-    <div id="mlSection" class="field hidden">
-      <label>Amount</label>
-      <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
-      <div class="unit-hint">millilitres (ml)</div>
+    <!-- History -->
+    <div class="section" data-id="history" draggable="true">
+      <div class="section-handle">
+        <div class="handle-dots"><span></span><span></span><span></span></div>
+        <div class="section-handle-title">Feed history</div>
+      </div>
+      <div class="section-body">
+        <div class="log-header">
+          <span style="font-size:13px;color:var(--muted);">All logged feeds</span>
+          <button class="btn-clear" onclick="clearAll()">Clear all</button>
+        </div>
+        <div class="log-list" id="logList"><div class="loading">Connecting to database...</div></div>
+      </div>
     </div>
 
-    <button class="btn-log" id="logBtn" onclick="logFeed()">Log feed</button>
   </div>
-
-  <!-- History -->
-  <div class="card">
-    <div class="log-header">
-      <span class="log-header-title">Feed history</span>
-      <button class="btn-clear" onclick="clearAll()">Clear all</button>
-    </div>
-    <div class="log-list" id="logList"><div class="loading">Connecting to database...</div></div>
-  </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -292,21 +303,108 @@
 
   let selectedSide = 'left';
   let allFeeds = [];
-  let lastFeedTime = null;
+
+  // ---- DRAG AND DROP ----
+  const container = document.getElementById('sections-container');
+  let dragEl = null;
+  let dragOverEl = null;
+
+  function saveSectionOrder() {
+    const order = [...container.querySelectorAll('.section')].map(s => s.dataset.id);
+    try { localStorage.setItem('sectionOrder', JSON.stringify(order)); } catch(e) {}
+  }
+
+  function restoreSectionOrder() {
+    try {
+      const saved = localStorage.getItem('sectionOrder');
+      if (!saved) return;
+      JSON.parse(saved).forEach(id => {
+        const el = container.querySelector(`[data-id="${id}"]`);
+        if (el) container.appendChild(el);
+      });
+    } catch(e) {}
+  }
+
+  container.addEventListener('dragstart', e => {
+    dragEl = e.target.closest('.section');
+    if (!dragEl) return;
+    dragEl.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  container.addEventListener('dragend', () => {
+    if (dragEl) dragEl.classList.remove('dragging');
+    if (dragOverEl) dragOverEl.classList.remove('drag-over');
+    dragEl = null; dragOverEl = null;
+    saveSectionOrder();
+  });
+
+  container.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('.section');
+    if (!target || target === dragEl) return;
+    if (dragOverEl) dragOverEl.classList.remove('drag-over');
+    dragOverEl = target;
+    dragOverEl.classList.add('drag-over');
+    const rect = target.getBoundingClientRect();
+    if (e.clientY < rect.top + rect.height / 2) container.insertBefore(dragEl, target);
+    else container.insertBefore(dragEl, target.nextSibling);
+  });
+
+  // Touch drag
+  let touchEl = null, touchClone = null, touchOffsetY = 0;
+
+  container.addEventListener('touchstart', e => {
+    const handle = e.target.closest('.section-handle');
+    if (!handle) return;
+    touchEl = handle.closest('.section');
+    const touch = e.touches[0];
+    const rect = touchEl.getBoundingClientRect();
+    touchOffsetY = touch.clientY - rect.top;
+    touchClone = touchEl.cloneNode(true);
+    touchClone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.9;z-index:999;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,0.15);transform:scale(1.01);`;
+    document.body.appendChild(touchClone);
+    touchEl.style.opacity = '0.3';
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!touchEl || !touchClone) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+    const sections = [...container.querySelectorAll('.section')].filter(s => s !== touchEl);
+    sections.forEach(s => s.classList.remove('drag-over'));
+    const target = sections.find(s => { const r = s.getBoundingClientRect(); return touch.clientY >= r.top && touch.clientY <= r.bottom; });
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      if (touch.clientY < rect.top + rect.height / 2) container.insertBefore(touchEl, target);
+      else container.insertBefore(touchEl, target.nextSibling);
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', () => {
+    if (!touchEl) return;
+    touchEl.style.opacity = '';
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    container.querySelectorAll('.drag-over').forEach(s => s.classList.remove('drag-over'));
+    touchEl = null;
+    saveSectionOrder();
+  });
+
+  restoreSectionOrder();
+
+  // ---- APP LOGIC ----
 
   function setNow() {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
-    const local = new Date(now - offset);
-    document.getElementById('feedTime').value = local.toISOString().slice(0, 16);
+    document.getElementById('feedTime').value = new Date(now - offset).toISOString().slice(0, 16);
   }
   setNow();
 
   window.selectSide = function(side) {
     selectedSide = side;
-    document.getElementById('btnLeft').classList.toggle('active', side === 'left');
-    document.getElementById('btnRight').classList.toggle('active', side === 'right');
-    document.getElementById('btnBoth').classList.toggle('active', side === 'both');
+    ['left','right','both'].forEach(s => document.getElementById('btn'+s.charAt(0).toUpperCase()+s.slice(1)).classList.toggle('active', s===side));
     if (side === 'both') {
       document.getElementById('singleSideField').classList.add('hidden');
       document.getElementById('bothSideFields').classList.remove('hidden');
@@ -319,13 +417,8 @@
 
   window.updateFields = function() {
     const type = document.getElementById('feedType').value;
-    if (type === 'breast') {
-      document.getElementById('breastSideSection').classList.remove('hidden');
-      document.getElementById('mlSection').classList.add('hidden');
-    } else {
-      document.getElementById('breastSideSection').classList.add('hidden');
-      document.getElementById('mlSection').classList.remove('hidden');
-    }
+    document.getElementById('breastSideSection').classList.toggle('hidden', type !== 'breast');
+    document.getElementById('mlSection').classList.toggle('hidden', type === 'breast');
   }
 
   window.logFeed = async function() {
@@ -340,42 +433,32 @@
       if (selectedSide === 'both') {
         const left = parseFloat(document.getElementById('feedAmountLeft').value);
         const right = parseFloat(document.getElementById('feedAmountRight').value);
-        if ((isNaN(left) || left <= 0) && (isNaN(right) || right <= 0)) { showToast('Please enter at least one duration.'); return; }
+        if ((isNaN(left)||left<=0) && (isNaN(right)||right<=0)) { showToast('Please enter at least one duration.'); return; }
         feed.side = 'both';
         feed.amountLeft = isNaN(left) ? 0 : left;
         feed.amountRight = isNaN(right) ? 0 : right;
-        feed.amount = (isNaN(left) ? 0 : left) + (isNaN(right) ? 0 : right);
+        feed.amount = feed.amountLeft + feed.amountRight;
       } else {
         const amount = parseFloat(document.getElementById('feedAmount').value);
-        if (isNaN(amount) || amount <= 0) { showToast('Please enter a duration.'); return; }
+        if (isNaN(amount)||amount<=0) { showToast('Please enter a duration.'); return; }
         feed.side = selectedSide;
         feed.amount = amount;
       }
     } else {
       const amount = parseFloat(document.getElementById('feedAmountMl').value);
-      if (isNaN(amount) || amount <= 0) { showToast('Please enter an amount.'); return; }
+      if (isNaN(amount)||amount<=0) { showToast('Please enter an amount.'); return; }
       feed.amount = amount;
     }
 
     const btn = document.getElementById('logBtn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
+    btn.disabled = true; btn.textContent = 'Saving...';
     try {
       await addDoc(feedsCol, feed);
-      document.getElementById('feedAmount').value = '';
-      document.getElementById('feedAmountLeft').value = '';
-      document.getElementById('feedAmountRight').value = '';
-      document.getElementById('feedAmountMl').value = '';
+      ['feedAmount','feedAmountLeft','feedAmountRight','feedAmountMl'].forEach(id => document.getElementById(id).value = '');
       setNow();
       showToast('Feed logged!');
-    } catch(e) {
-      showToast('Error saving — check connection.');
-      console.error(e);
-    }
-
-    btn.disabled = false;
-    btn.textContent = 'Log feed';
+    } catch(e) { showToast('Error saving — check connection.'); }
+    btn.disabled = false; btn.textContent = 'Log feed';
   }
 
   window.deleteFeed = async function(id) {
@@ -383,90 +466,37 @@
     catch(e) { showToast('Error deleting feed.'); }
   }
 
-  window.clearAll = function() {
-    showToast('Use the ✕ button to delete individual feeds.');
-  }
-
-  // Smart alarm — opens clock app with 3hr alarm pre-set
-  window.setSmartAlarm = function() {
-    const base = lastFeedTime ? new Date(lastFeedTime) : new Date();
-    const alarmTime = new Date(base.getTime() + 3 * 60 * 60 * 1000);
-    const h = alarmTime.getHours().toString().padStart(2, '0');
-    const m = alarmTime.getMinutes().toString().padStart(2, '0');
-    const timeStr = h + ':' + m;
-    const friendlyTime = alarmTime.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-    // Try to open native clock app
-    // iOS Safari supports clock:// but Android uses intent://
-    const ua = navigator.userAgent.toLowerCase();
-    const isAndroid = ua.includes('android');
-    const isIOS = /iphone|ipad|ipod/.test(ua);
-
-    if (isIOS) {
-      // Open iOS clock app
-      window.location.href = 'clock-alarm://';
-      setTimeout(() => {
-        showToast('Set alarm for ' + friendlyTime + ' in your Clock app');
-      }, 300);
-    } else if (isAndroid) {
-      // Android alarm intent
-      window.location.href = 'intent://alarm?hour=' + alarmTime.getHours() + '&minutes=' + alarmTime.getMinutes() + '&message=Feed+baby&vibrate=true#Intent;scheme=android-app;package=com.google.android.deskclock;end';
-      setTimeout(() => {
-        showToast('Set alarm for ' + friendlyTime + ' in your Clock app');
-      }, 300);
-    } else {
-      // Desktop fallback — copy to clipboard
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText('Feed baby at ' + friendlyTime);
-      }
-      showToast('Next feed at ' + friendlyTime + ' — set an alarm!');
-    }
-
-    // Update button to show it was tapped
-    const btn = document.getElementById('alarmBtn');
-    const sub = document.getElementById('alarmBtnSub');
-    btn.classList.add('active');
-    sub.textContent = 'Reminder set for ' + friendlyTime;
-  }
+  window.clearAll = function() { showToast('Use the ✕ button to delete individual feeds.'); }
 
   function timeAgo(date) {
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHrs = Math.floor(diffMins / 60);
-    const remMins = diffMins % 60;
+    const diffMins = Math.floor((new Date() - date) / 60000);
+    const h = Math.floor(diffMins / 60);
+    const m = diffMins % 60;
     if (diffMins < 1) return { display: 'Just now', mins: 0 };
-    if (diffHrs === 0) return { display: diffMins + 'm ago', mins: diffMins };
-    return { display: diffHrs + 'h ' + remMins + 'm ago', mins: diffMins };
+    if (h === 0) return { display: diffMins + 'm ago', mins: diffMins };
+    return { display: h + 'h ' + m + 'm ago', mins: diffMins };
   }
 
   function updateBanner(lastFeed) {
     const banner = document.getElementById('lastFeedBanner');
     const title = document.getElementById('bannerTitle');
     const sub = document.getElementById('bannerSub');
-    const time = document.getElementById('bannerTime');
-    const alarmTitle = document.getElementById('alarmBtnTitle');
-    const alarmSub = document.getElementById('alarmBtnSub');
-    const alarmBtn = document.getElementById('alarmBtn');
+    const timeEl = document.getElementById('bannerTime');
 
     if (!lastFeed) {
       banner.className = 'last-feed-banner';
       title.textContent = 'No feeds logged yet';
       sub.textContent = 'Log your first feed below';
-      time.textContent = '';
-      alarmTitle.textContent = 'Set 3hr feed reminder';
-      alarmSub.textContent = 'Tap to open your clock app with the time pre-set';
-      alarmBtn.classList.remove('active');
+      timeEl.textContent = '';
       return;
     }
 
     const feedDate = new Date(lastFeed.time);
-    lastFeedTime = lastFeed.time;
     const ago = timeAgo(feedDate);
     const who = lastFeed.who ? ' by ' + lastFeed.who : '';
     const type = lastFeed.type === 'breast' ? 'Breast' : lastFeed.type === 'pumped' ? 'Pumped milk' : 'Formula';
 
-    time.textContent = ago.display;
+    timeEl.textContent = ago.display;
     title.textContent = 'Last feed — ' + type + who;
     sub.textContent = feedDate.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
 
@@ -474,116 +504,68 @@
     if (ago.mins < 120) banner.classList.add('ok');
     else if (ago.mins < 180) banner.classList.add('warn');
     else banner.classList.add('alert');
-
-    // Update alarm button text
-    const nextFeed = new Date(feedDate.getTime() + 3 * 60 * 60 * 1000);
-    const nextFeedStr = nextFeed.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
-    alarmTitle.textContent = 'Set 3hr feed reminder';
-    alarmSub.textContent = 'Next feed due at ' + nextFeedStr + ' — tap to set alarm';
   }
 
   function renderChart(todayFeeds) {
     const wrap = document.getElementById('chartWrap');
-    if (todayFeeds.length === 0) {
-      wrap.innerHTML = '<div class="chart-empty">No feeds logged today yet</div>';
-      return;
-    }
-
-    const hours = Array.from({length: 24}, (_, i) => ({ hour: i, breast: 0, pumped: 0, formula: 0, total: 0 }));
+    if (todayFeeds.length === 0) { wrap.innerHTML = '<div class="chart-empty">No feeds logged today yet</div>'; return; }
+    const hours = Array.from({length:24}, () => ({ breast:0, pumped:0, formula:0, total:0 }));
     todayFeeds.forEach(f => {
       const h = new Date(f.time).getHours();
-      if (f.type === 'breast') hours[h].breast++;
-      else if (f.type === 'pumped') hours[h].pumped++;
-      else hours[h].formula++;
+      hours[h][f.type]++;
       hours[h].total++;
     });
-
     const maxTotal = Math.max(...hours.map(h => h.total), 1);
-    const barHeight = 70;
-
-    let barsHtml = '';
-    let labelsHtml = '';
-
-    for (let i = 0; i <= 23; i++) {
+    const bh = 70;
+    let bars = '', labels = '';
+    for (let i = 0; i < 24; i++) {
       const h = hours[i];
-      const breastH = (h.breast / maxTotal) * barHeight;
-      const pumpedH = (h.pumped / maxTotal) * barHeight;
-      const formulaH = (h.formula / maxTotal) * barHeight;
-
-      barsHtml += `<div class="chart-bar-col" title="${i}:00 — ${h.total} feed${h.total !== 1 ? 's' : ''}">`;
-      if (h.formula > 0) barsHtml += `<div class="chart-bar formula" style="height:${formulaH}px"></div>`;
-      if (h.pumped > 0) barsHtml += `<div class="chart-bar pumped" style="height:${pumpedH}px"></div>`;
-      if (h.breast > 0) barsHtml += `<div class="chart-bar breast" style="height:${breastH}px"></div>`;
-      if (h.total === 0) barsHtml += `<div style="height:2px;background:var(--border);border-radius:1px;"></div>`;
-      barsHtml += `</div>`;
-
-      const label = i === 0 ? '12a' : i < 12 ? i + 'a' : i === 12 ? '12p' : (i-12) + 'p';
-      labelsHtml += `<div class="chart-label">${i % 4 === 0 ? label : ''}</div>`;
+      bars += `<div class="chart-bar-col" title="${i}:00 — ${h.total} feed${h.total!==1?'s':''}">`;
+      if (h.formula > 0) bars += `<div class="chart-bar formula" style="height:${(h.formula/maxTotal)*bh}px"></div>`;
+      if (h.pumped > 0) bars += `<div class="chart-bar pumped" style="height:${(h.pumped/maxTotal)*bh}px"></div>`;
+      if (h.breast > 0) bars += `<div class="chart-bar breast" style="height:${(h.breast/maxTotal)*bh}px"></div>`;
+      if (h.total === 0) bars += `<div style="height:2px;background:var(--border);border-radius:1px;"></div>`;
+      bars += `</div>`;
+      const lbl = i===0?'12a':i<12?i+'a':i===12?'12p':(i-12)+'p';
+      labels += `<div class="chart-label">${i%4===0?lbl:''}</div>`;
     }
-
-    wrap.innerHTML = `
-      <div class="chart-hours">${barsHtml}</div>
-      <div class="chart-labels">${labelsHtml}</div>
-      <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot breast"></div>Breast</div>
-        <div class="legend-item"><div class="legend-dot pumped"></div>Pumped</div>
-        <div class="legend-item"><div class="legend-dot formula"></div>Formula</div>
-      </div>`;
+    wrap.innerHTML = `<div class="chart-hours">${bars}</div><div class="chart-labels">${labels}</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot breast"></div>Breast</div><div class="legend-item"><div class="legend-dot pumped"></div>Pumped</div><div class="legend-item"><div class="legend-dot formula"></div>Formula</div></div>`;
   }
 
-  function isToday(str) {
-    return new Date(str).toDateString() === new Date().toDateString();
-  }
-
-  function typeLabel(f) {
-    if (f.type === 'pumped') return 'Pumped milk';
-    if (f.type === 'formula') return 'Formula';
-    return 'Breast';
-  }
-
-  function sideLabel(f) {
-    if (f.type !== 'breast') return null;
-    if (f.side === 'both') return 'both sides';
-    return f.side + ' side';
-  }
-
+  function isToday(str) { return new Date(str).toDateString() === new Date().toDateString(); }
+  function typeLabel(f) { return f.type==='pumped'?'Pumped milk':f.type==='formula'?'Formula':'Breast'; }
+  function sideLabel(f) { if(f.type!=='breast')return null; return f.side==='both'?'both sides':f.side+' side'; }
   function formatAmt(f) {
-    if (f.type !== 'breast') return f.amount + ' ml';
-    if (f.side === 'both') {
-      let parts = [];
-      if (f.amountLeft > 0) parts.push('L: ' + f.amountLeft + ' min');
-      if (f.amountRight > 0) parts.push('R: ' + f.amountRight + ' min');
-      return parts.join(' · ') + ' (' + f.amount + ' min total)';
-    }
-    return f.amount + ' min';
+    if(f.type!=='breast') return f.amount+' ml';
+    if(f.side==='both') { let p=[]; if(f.amountLeft>0)p.push('L: '+f.amountLeft+' min'); if(f.amountRight>0)p.push('R: '+f.amountRight+' min'); return p.join(' · ')+' ('+f.amount+' min total)'; }
+    return f.amount+' min';
   }
-
   function formatDateTime(str) {
     const d = new Date(str);
-    return {
-      date: d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }),
-      time: d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true })
-    };
+    return { date: d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}), time: d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true}) };
   }
 
   function renderFeeds(feeds) {
     allFeeds = feeds;
-    const list = document.getElementById('logList');
-    const todayFeeds = feeds.filter(f => isToday(f.time));
 
-    updateBanner(feeds.length > 0 ? feeds[0] : null);
+    // Sort by actual feed time descending to find the true most recent feed
+    const sortedByTime = [...feeds].sort((a, b) => new Date(b.time) - new Date(a.time));
+    const lastFeed = sortedByTime.length > 0 ? sortedByTime[0] : null;
+
+    const todayFeeds = feeds.filter(f => isToday(f.time));
+    updateBanner(lastFeed);
     renderChart(todayFeeds);
 
     document.getElementById('totalFeeds').textContent = todayFeeds.length;
-    const ml = todayFeeds.filter(f => f.type !== 'breast').reduce((s, f) => s + f.amount, 0);
-    document.getElementById('totalMl').textContent = ml + ' ml';
-    const min = todayFeeds.filter(f => f.type === 'breast').reduce((s, f) => s + f.amount, 0);
-    document.getElementById('totalMin').textContent = min + ' min';
+    document.getElementById('totalMl').textContent = todayFeeds.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0)+' ml';
+    document.getElementById('totalMin').textContent = todayFeeds.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0)+' min';
 
+    const list = document.getElementById('logList');
     if (feeds.length === 0) {
       list.innerHTML = '<div class="empty"><div class="empty-icon">🍼</div>No feeds logged yet.<br>Add your first one above.</div>';
     } else {
-      list.innerHTML = feeds.map(f => {
+      // Display history sorted by feed time descending
+      list.innerHTML = sortedByTime.map(f => {
         const dt = formatDateTime(f.time);
         const side = sideLabel(f);
         return `<div class="log-item">
@@ -591,8 +573,8 @@
           <div class="log-info">
             <div class="log-type-row">
               <span class="log-type">${typeLabel(f)}</span>
-              ${side ? `<span class="badge breast">${side}</span>` : `<span class="badge ${f.type}">${f.type === 'pumped' ? 'pumped' : 'formula'}</span>`}
-              ${f.who ? `<span class="badge who">${f.who}</span>` : ''}
+              ${side?`<span class="badge breast">${side}</span>`:`<span class="badge ${f.type}">${f.type==='pumped'?'pumped':'formula'}</span>`}
+              ${f.who?`<span class="badge who">${f.who}</span>`:''}
             </div>
             <div class="log-amount">${formatAmt(f)}</div>
           </div>
@@ -603,20 +585,15 @@
     }
   }
 
-  // Refresh banner every minute
-  setInterval(() => {
-    if (allFeeds.length > 0) updateBanner(allFeeds[0]);
-  }, 60000);
+  setInterval(() => { if (allFeeds.length > 0) { const sorted = [...allFeeds].sort((a,b)=>new Date(b.time)-new Date(a.time)); updateBanner(sorted[0]); } }, 60000);
 
   const q = query(feedsCol, orderBy("createdAt", "desc"));
-  onSnapshot(q, (snapshot) => {
+  onSnapshot(q, snapshot => {
     document.getElementById('syncDot').classList.add('live');
-    const feeds = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderFeeds(feeds);
-  }, (err) => {
+    renderFeeds(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+  }, err => {
     document.getElementById('syncDot').classList.remove('live');
     document.getElementById('logList').innerHTML = '<div class="loading">Connection error. Please refresh.</div>';
-    console.error(err);
   });
 
   function showToast(msg) {

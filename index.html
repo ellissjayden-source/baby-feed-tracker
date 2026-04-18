@@ -33,7 +33,6 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 0;
     }
 
     .app-header {
@@ -49,29 +48,20 @@
     }
 
     .app-icon {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       background: var(--accent-light);
       border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 20px;
     }
 
     .app-header h1 {
       font-family: 'DM Serif Display', serif;
-      font-size: 20px;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: -0.01em;
+      font-size: 20px; font-weight: 400;
+      color: var(--text); letter-spacing: -0.01em;
     }
 
-    .app-header p {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
+    .app-header p { font-size: 12px; color: var(--muted); margin-top: 1px; }
 
     .main { max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
 
@@ -84,12 +74,9 @@
     }
 
     .card-title {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1rem;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1rem;
     }
 
     .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
@@ -97,15 +84,12 @@
 
     .field select, .field input[type="datetime-local"], .field input[type="number"] {
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      padding: 10px 12px;
+      font-size: 15px; padding: 10px 12px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: var(--surface2);
-      color: var(--text);
-      width: 100%;
-      appearance: none;
-      -webkit-appearance: none;
+      color: var(--text); width: 100%;
+      appearance: none; -webkit-appearance: none;
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
@@ -118,34 +102,56 @@
 
     .select-wrap { position: relative; }
     .select-wrap::after {
-      content: '▾';
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      pointer-events: none;
-      font-size: 13px;
+      content: '▾'; position: absolute;
+      right: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none; font-size: 13px;
     }
 
     .unit-hint { font-size: 12px; color: var(--hint); margin-top: 3px; }
-
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-    .btn-log {
-      width: 100%;
-      padding: 12px;
+    /* Breast side toggle */
+    .side-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
+    .side-btn {
+      flex: 1; padding: 10px 8px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 14px; font-weight: 500;
       border-radius: var(--radius-sm);
-      border: none;
-      background: var(--accent);
-      color: #fff;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
       cursor: pointer;
-      margin-top: 4px;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .side-btn:hover { border-color: var(--breast); color: var(--breast); }
+    .side-btn.active {
+      background: var(--breast-light);
+      border-color: var(--breast);
+      color: var(--breast);
+    }
+    .side-btn.both.active {
+      background: var(--breast-light);
+      border-color: var(--breast);
+      color: var(--breast);
+    }
+    .side-label {
+      font-size: 12px; font-weight: 500;
+      color: var(--muted); margin-bottom: 6px;
+    }
+
+    /* Duration row for both sides */
+    .both-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .both-fields .field { margin-bottom: 0; }
+
+    .btn-log {
+      width: 100%; padding: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 500;
+      border-radius: var(--radius-sm);
+      border: none; background: var(--accent);
+      color: #fff; cursor: pointer; margin-top: 4px;
       transition: opacity 0.15s, transform 0.1s;
-      letter-spacing: 0.01em;
     }
     .btn-log:hover { opacity: 0.9; }
     .btn-log:active { transform: scale(0.98); }
@@ -155,8 +161,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 14px 10px;
-      text-align: center;
+      padding: 14px 10px; text-align: center;
     }
     .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
     .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
@@ -165,22 +170,16 @@
     .log-header-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
     .btn-clear {
       font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      color: var(--muted);
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 4px 10px;
-      cursor: pointer;
+      font-size: 12px; color: var(--muted);
+      background: none; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer;
     }
     .btn-clear:hover { background: var(--surface2); }
 
     .log-list { display: flex; flex-direction: column; gap: 7px; }
 
     .log-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 12px;
       padding: 11px 13px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
@@ -193,21 +192,18 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .log-dot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-    }
+    .log-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .log-dot.breast { background: var(--breast); }
     .log-dot.pumped { background: var(--pumped); }
     .log-dot.formula { background: var(--formula); }
 
     .log-info { flex: 1; min-width: 0; }
-    .log-type-row { display: flex; align-items: center; gap: 7px; }
+    .log-type-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .log-type { font-size: 13px; font-weight: 500; color: var(--text); }
+
     .badge {
-      font-size: 10px;
-      font-weight: 500;
-      padding: 2px 7px;
-      border-radius: 999px;
+      font-size: 10px; font-weight: 500;
+      padding: 2px 7px; border-radius: 999px;
     }
     .badge.breast { background: var(--breast-light); color: var(--breast); }
     .badge.pumped { background: var(--pumped-light); color: var(--pumped); }
@@ -218,42 +214,31 @@
 
     .btn-del {
       background: none; border: none; color: var(--hint);
-      cursor: pointer; font-size: 15px; padding: 0 0 0 4px; line-height: 1;
-      flex-shrink: 0;
+      cursor: pointer; font-size: 15px; padding: 0 0 0 4px; line-height: 1; flex-shrink: 0;
     }
     .btn-del:hover { color: var(--breast); }
 
     .empty {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
+      text-align: center; padding: 2.5rem 1rem;
+      color: var(--muted); font-size: 14px; line-height: 1.6;
     }
     .empty-icon { font-size: 32px; margin-bottom: 10px; }
 
+    .hidden { display: none; }
+
     .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
+      position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(10px);
-      background: var(--text);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      opacity: 0;
+      background: var(--text); color: #fff;
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      font-size: 14px; opacity: 0;
       transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      z-index: 100;
-      white-space: nowrap;
+      pointer-events: none; z-index: 100; white-space: nowrap;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 400px) {
       .field-row { grid-template-columns: 1fr; }
-      .summary-grid { grid-template-columns: repeat(3, 1fr); }
-      .stat-val { font-size: 17px; }
     }
   </style>
 </head>
@@ -271,11 +256,12 @@
 
   <div class="card">
     <div class="card-title">Log a feed</div>
+
     <div class="field-row">
       <div class="field">
         <label>Feed type</label>
         <div class="select-wrap">
-          <select id="feedType" onchange="updateAmountField()">
+          <select id="feedType" onchange="updateFields()">
             <option value="breast">Breast (boob)</option>
             <option value="pumped">Pumped breast milk</option>
             <option value="formula">Formula</option>
@@ -288,10 +274,42 @@
       </div>
     </div>
 
-    <div class="field">
-      <label id="amountLabel">Duration</label>
-      <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
-      <div class="unit-hint" id="unitHint">minutes on the breast</div>
+    <!-- Breast side selector -->
+    <div id="breastSideSection">
+      <div class="side-label">Which side?</div>
+      <div class="side-toggle">
+        <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
+        <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
+        <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
+      </div>
+
+      <!-- Single side duration -->
+      <div id="singleSideField" class="field">
+        <label id="singleSideLabel">Duration — left side</label>
+        <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
+        <div class="unit-hint">minutes on the breast</div>
+      </div>
+
+      <!-- Both sides durations -->
+      <div id="bothSideFields" class="both-fields hidden">
+        <div class="field">
+          <label>Duration — left side</label>
+          <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">minutes</div>
+        </div>
+        <div class="field">
+          <label>Duration — right side</label>
+          <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">minutes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pumped / Formula amount -->
+    <div id="mlSection" class="field hidden">
+      <label>Amount</label>
+      <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
+      <div class="unit-hint">millilitres (ml)</div>
     </div>
 
     <button class="btn-log" onclick="logFeed()">Log feed</button>
@@ -326,8 +344,10 @@
 
 <script>
   let feeds = [];
+  let selectedSide = 'left';
+
   try {
-    const saved = localStorage.getItem('babyFeeds_v1');
+    const saved = localStorage.getItem('babyFeeds_v2');
     if (saved) feeds = JSON.parse(saved);
   } catch(e) {}
 
@@ -339,35 +359,76 @@
   }
   setNow();
 
-  function updateAmountField() {
-    const type = document.getElementById('feedType').value;
-    const lbl = document.getElementById('amountLabel');
-    const hint = document.getElementById('unitHint');
-    document.getElementById('feedAmount').value = '';
-    if (type === 'breast') {
-      lbl.textContent = 'Duration';
-      hint.textContent = 'minutes on the breast';
+  function selectSide(side) {
+    selectedSide = side;
+    document.getElementById('btnLeft').classList.toggle('active', side === 'left');
+    document.getElementById('btnRight').classList.toggle('active', side === 'right');
+    document.getElementById('btnBoth').classList.toggle('active', side === 'both');
+
+    if (side === 'both') {
+      document.getElementById('singleSideField').classList.add('hidden');
+      document.getElementById('bothSideFields').classList.remove('hidden');
     } else {
-      lbl.textContent = 'Amount';
-      hint.textContent = 'millilitres (ml)';
+      document.getElementById('singleSideField').classList.remove('hidden');
+      document.getElementById('bothSideFields').classList.add('hidden');
+      document.getElementById('singleSideLabel').textContent = 'Duration — ' + side + ' side';
+    }
+  }
+
+  function updateFields() {
+    const type = document.getElementById('feedType').value;
+    if (type === 'breast') {
+      document.getElementById('breastSideSection').classList.remove('hidden');
+      document.getElementById('mlSection').classList.add('hidden');
+    } else {
+      document.getElementById('breastSideSection').classList.add('hidden');
+      document.getElementById('mlSection').classList.remove('hidden');
     }
   }
 
   function logFeed() {
     const type = document.getElementById('feedType').value;
     const time = document.getElementById('feedTime').value;
-    const amount = parseFloat(document.getElementById('feedAmount').value);
     if (!time) { showToast('Please set a date and time.'); return; }
-    if (isNaN(amount) || amount <= 0) { showToast('Please enter a valid amount.'); return; }
-    feeds.unshift({ type, time, amount, id: Date.now() });
+
+    let feed = { type, time, id: Date.now() };
+
+    if (type === 'breast') {
+      if (selectedSide === 'both') {
+        const left = parseFloat(document.getElementById('feedAmountLeft').value);
+        const right = parseFloat(document.getElementById('feedAmountRight').value);
+        if ((isNaN(left) || left <= 0) && (isNaN(right) || right <= 0)) {
+          showToast('Please enter at least one duration.'); return;
+        }
+        feed.side = 'both';
+        feed.amountLeft = isNaN(left) ? 0 : left;
+        feed.amountRight = isNaN(right) ? 0 : right;
+        feed.amount = (isNaN(left) ? 0 : left) + (isNaN(right) ? 0 : right);
+      } else {
+        const amount = parseFloat(document.getElementById('feedAmount').value);
+        if (isNaN(amount) || amount <= 0) { showToast('Please enter a duration.'); return; }
+        feed.side = selectedSide;
+        feed.amount = amount;
+      }
+    } else {
+      const amount = parseFloat(document.getElementById('feedAmountMl').value);
+      if (isNaN(amount) || amount <= 0) { showToast('Please enter an amount.'); return; }
+      feed.amount = amount;
+    }
+
+    feeds.unshift(feed);
     save(); render();
+
     document.getElementById('feedAmount').value = '';
+    document.getElementById('feedAmountLeft').value = '';
+    document.getElementById('feedAmountRight').value = '';
+    document.getElementById('feedAmountMl').value = '';
     setNow();
     showToast('Feed logged!');
   }
 
   function save() {
-    try { localStorage.setItem('babyFeeds_v1', JSON.stringify(feeds)); } catch(e) {}
+    try { localStorage.setItem('babyFeeds_v2', JSON.stringify(feeds)); } catch(e) {}
   }
 
   function clearAll() {
@@ -380,16 +441,27 @@
     save(); render();
   }
 
-  function typeLabel(t) {
-    return t === 'breast' ? 'Breast' : t === 'pumped' ? 'Pumped milk' : 'Formula';
+  function typeLabel(f) {
+    if (f.type === 'pumped') return 'Pumped milk';
+    if (f.type === 'formula') return 'Formula';
+    return 'Breast';
   }
 
-  function badgeLabel(t) {
-    return t === 'breast' ? 'boob' : t === 'pumped' ? 'pumped' : 'formula';
+  function sideLabel(f) {
+    if (f.type !== 'breast') return null;
+    if (f.side === 'both') return 'both sides';
+    return f.side + ' side';
   }
 
   function formatAmt(f) {
-    return f.type === 'breast' ? f.amount + ' min' : f.amount + ' ml';
+    if (f.type !== 'breast') return f.amount + ' ml';
+    if (f.side === 'both') {
+      let parts = [];
+      if (f.amountLeft > 0) parts.push('L: ' + f.amountLeft + ' min');
+      if (f.amountRight > 0) parts.push('R: ' + f.amountRight + ' min');
+      return parts.join(' · ') + ' (' + f.amount + ' min total)';
+    }
+    return f.amount + ' min';
   }
 
   function formatDateTime(str) {
@@ -410,12 +482,13 @@
     } else {
       list.innerHTML = feeds.map(f => {
         const dt = formatDateTime(f.time);
+        const side = sideLabel(f);
         return `<div class="log-item">
           <div class="log-dot ${f.type}"></div>
           <div class="log-info">
             <div class="log-type-row">
-              <span class="log-type">${typeLabel(f.type)}</span>
-              <span class="badge ${f.type}">${badgeLabel(f.type)}</span>
+              <span class="log-type">${typeLabel(f)}</span>
+              ${side ? `<span class="badge breast">${side}</span>` : `<span class="badge ${f.type}">${f.type === 'pumped' ? 'pumped' : 'formula'}</span>`}
             </div>
             <div class="log-amount">${formatAmt(f)}</div>
           </div>

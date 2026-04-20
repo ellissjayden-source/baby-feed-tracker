@@ -2,195 +2,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Baby Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0f1b2d;
-      --surface: #1a2d45;
-      --surface2: #243852;
-      --border: #2d4a6a;
-      --text: #f0f4f8;
-      --muted: #8aa8c8;
-      --hint: #4a6a8a;
-      --sleep: #00c4d4;
-      --sleep-dark: #008a97;
-      --sleep-bg: #003d45;
-      --nursing: #ff7043;
-      --nursing-dark: #c4440a;
-      --nursing-bg: #4a1a08;
-      --solids: #e84c8b;
-      --solids-dark: #a8205a;
-      --solids-bg: #3d0a20;
-      --green: #4caf7d;
-      --green-bg: #0a2d1a;
-      --accent: #ffd54f;
-      --radius: 18px;
-      --radius-sm: 10px;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --bg:#0f1b2d;--surface:#1a2d45;--surface2:#243852;--border:#2d4a6a;
+      --text:#f0f4f8;--muted:#8aa8c8;--hint:#4a6a8a;
+      --sleep:#00c4d4;--sleep-dark:#008a97;--sleep-bg:#003d45;
+      --nursing:#ff7043;--nursing-dark:#c4440a;--nursing-bg:#4a1a08;
+      --solids:#e84c8b;--solids-dark:#a8205a;--solids-bg:#3d0a20;
+      --green:#4caf7d;--green-bg:#0a2d1a;--accent:#ffd54f;
+      --radius:18px;--radius-sm:10px;
     }
-    html, body { height: 100%; }
-    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    html,body{height:100%;}
+    body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
-    /* ---- SCREENS ---- */
-    .screen { display: none; min-height: 100vh; flex-direction: column; }
-    .screen.active { display: flex; }
+    .screen{display:none;min-height:100vh;flex-direction:column;}
+    .screen.active{display:flex;}
 
-    /* ---- HOME SCREEN ---- */
-    #screen-home { padding: 0; }
-    .home-header { padding: 1.25rem 1.25rem 0.75rem; display: flex; align-items: center; justify-content: space-between; }
-    .profile-btn { display: flex; align-items: center; gap: 10px; background: var(--surface); border: none; border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer; transition: background 0.15s; }
-    .profile-btn:hover { background: var(--surface2); }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #fff; flex-shrink: 0; }
-    .profile-name { font-size: 15px; font-weight: 700; color: var(--text); }
-    .profile-sub { font-size: 11px; color: var(--muted); }
-    .sync-badge { width: 10px; height: 10px; border-radius: 50%; background: var(--hint); transition: background 0.3s; }
-    .sync-badge.live { background: var(--green); }
+    /* HOME */
+    .home-header{padding:1.25rem 1.25rem 0.5rem;display:flex;align-items:center;justify-content:space-between;}
+    .profile-btn{display:flex;align-items:center;gap:10px;background:var(--surface);border:none;border-radius:999px;padding:6px 14px 6px 6px;cursor:pointer;}
+    .profile-btn:hover{background:var(--surface2);}
+    .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
+    .profile-name{font-size:15px;font-weight:700;color:var(--text);}
+    .profile-sub{font-size:11px;color:var(--muted);}
+    .sync-badge{width:10px;height:10px;border-radius:50%;background:var(--hint);transition:background 0.3s;}
+    .sync-badge.live{background:var(--green);}
+    .home-greeting{padding:0.25rem 1.25rem 0.75rem;}
+    .home-greeting h1{font-size:22px;font-weight:800;}
+    .home-greeting p{font-size:13px;color:var(--muted);margin-top:2px;}
 
-    .home-greeting { padding: 0.5rem 1.25rem 1rem; }
-    .home-greeting h1 { font-size: 22px; font-weight: 800; color: var(--text); }
-    .home-greeting p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    /* WIDGETS */
+    .widgets{padding:0 1rem 2rem;display:flex;flex-direction:column;gap:12px;}
+    .widget{border-radius:var(--radius);padding:1.4rem;cursor:pointer;position:relative;overflow:hidden;border:none;width:100%;text-align:left;transition:transform 0.15s,filter 0.15s;}
+    .widget:active{transform:scale(0.97);filter:brightness(0.92);}
+    .widget-sleep{background:linear-gradient(135deg,#00b4c4 0%,#0088a0 100%);min-height:110px;}
+    .widget-nursing{background:linear-gradient(135deg,#ff6030 0%,#cc3a10 100%);min-height:110px;}
+    .widget-solids{background:linear-gradient(135deg,#e8408a 0%,#b01860 100%);min-height:110px;}
+    .widget-label{font-size:24px;font-weight:900;color:#fff;letter-spacing:-0.02em;}
+    .widget-sub{font-size:13px;color:rgba(255,255,255,0.85);margin-top:5px;font-weight:600;}
+    .widget-sub2{font-size:12px;color:rgba(255,255,255,0.65);margin-top:2px;font-weight:600;}
+    .widget-icon{position:absolute;right:16px;bottom:14px;font-size:44px;opacity:0.2;}
+    .widget-timer-badge{position:absolute;top:12px;right:12px;background:rgba(255,100,50,0.9);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800;color:#fff;animation:pulse 1.5s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
-    /* Widget tiles */
-    .widgets { padding: 0 1rem 2rem; display: flex; flex-direction: column; gap: 12px; }
-    .widget { border-radius: var(--radius); padding: 1.4rem 1.4rem; cursor: pointer; position: relative; overflow: hidden; border: none; width: 100%; text-align: left; transition: transform 0.15s, filter 0.15s; }
-    .widget:active { transform: scale(0.97); filter: brightness(0.92); }
-    .widget-sleep { background: linear-gradient(135deg, #00b4c4 0%, #0088a0 100%); min-height: 110px; }
-    .widget-row { display: flex; gap: 12px; }
-    .widget-row .widget { flex: 1; min-height: 110px; }
-    .widget-nursing { background: linear-gradient(135deg, #ff6030 0%, #cc3a10 100%); }
-    .widget-solids { background: linear-gradient(135deg, #e8408a 0%, #b01860 100%); min-height: 110px; }
-    .widget-label { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
-    .widget-sub { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; font-weight: 600; }
-    .widget-icon { position: absolute; right: 16px; bottom: 14px; font-size: 40px; opacity: 0.25; }
-    .widget-icon-sm { position: absolute; right: 12px; bottom: 10px; font-size: 30px; opacity: 0.25; }
-    .widget-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.2); border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
+    /* INNER SCREENS */
+    .inner-header{background:var(--surface);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);}
+    .back-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:24px;padding:0;line-height:1;flex-shrink:0;}
+    .inner-title{font-size:18px;font-weight:800;color:var(--text);flex:1;}
+    #screen-sleep .inner-title{color:var(--sleep);}
+    #screen-nursing .inner-title{color:var(--nursing);}
+    #screen-solids .inner-title{color:var(--solids);}
+    .inner-body{flex:1;padding:1.25rem 1rem 4rem;max-width:560px;margin:0 auto;width:100%;}
 
-    /* ---- INNER SCREENS ---- */
-    .inner-header { background: var(--surface); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); }
-    .back-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; padding: 0; line-height: 1; flex-shrink: 0; }
-    .inner-title { font-size: 18px; font-weight: 800; color: var(--text); flex: 1; }
-    .inner-body { flex: 1; padding: 1.25rem 1rem 4rem; max-width: 520px; margin: 0 auto; width: 100%; }
+    /* TABS */
+    .tab-bar{display:flex;background:var(--surface2);border-radius:var(--radius-sm);padding:4px;margin-bottom:1rem;gap:4px;}
+    .tab-btn{flex:1;padding:9px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;border:none;border-radius:8px;background:none;color:var(--muted);cursor:pointer;transition:all 0.15s;}
+    .tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.3);}
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
 
-    /* Sleep screen colours */
-    #screen-sleep .inner-header { border-bottom-color: var(--sleep-dark); }
-    #screen-sleep .inner-title { color: var(--sleep); }
-    #screen-nursing .inner-header { border-bottom-color: var(--nursing-dark); }
-    #screen-nursing .inner-title { color: var(--nursing); }
-    #screen-solids .inner-header { border-bottom-color: var(--solids-dark); }
-    #screen-solids .inner-title { color: var(--solids); }
+    /* CARDS */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+    .card-title{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
 
-    /* Cards */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
-    .card-title { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    /* LAST BANNER */
+    .last-banner{border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:14px;border:1px solid var(--border);background:var(--surface);}
+    .last-banner.ok{background:var(--nursing-bg);border-color:var(--nursing-dark);}
+    .last-banner.warn{background:#3a1500;border-color:#cc5500;}
+    .last-banner.alert{background:#3a0808;border-color:var(--nursing-dark);}
+    .last-banner.sleep-ok{background:var(--sleep-bg);border-color:var(--sleep-dark);}
+    .last-banner.solids-ok{background:var(--solids-bg);border-color:var(--solids-dark);}
+    .banner-icon{font-size:26px;flex-shrink:0;}
+    .banner-text{flex:1;}
+    .banner-title{font-size:14px;font-weight:700;color:var(--text);}
+    .banner-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+    .banner-time{font-size:22px;font-weight:800;color:var(--text);white-space:nowrap;}
 
-    /* Last event banner */
-    .last-banner { border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 14px; border: 1px solid var(--border); background: var(--surface); }
-    .last-banner.sleep-ok { background: var(--sleep-bg); border-color: var(--sleep-dark); }
-    .last-banner.nursing-ok { background: var(--nursing-bg); border-color: var(--nursing-dark); }
-    .last-banner.nursing-warn { background: #3a1500; border-color: #cc5500; }
-    .last-banner.nursing-alert { background: #3a0808; border-color: var(--nursing-dark); }
-    .last-banner.solids-ok { background: var(--solids-bg); border-color: var(--solids-dark); }
-    .banner-icon { font-size: 26px; flex-shrink: 0; }
-    .banner-text { flex: 1; }
-    .banner-title { font-size: 14px; font-weight: 700; color: var(--text); }
-    .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .banner-time { font-size: 22px; font-weight: 800; color: var(--text); white-space: nowrap; }
+    /* STATS */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;}
+    .stat-val{font-size:20px;font-weight:800;color:var(--text);line-height:1;}
+    .stat-lbl{font-size:10px;font-weight:700;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em;}
 
-    /* Stats */
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
-    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
-    .stat-val { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1; }
-    .stat-lbl { font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    /* FIELDS */
+    .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+    .field label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;}
+    .field select,.field input{font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text);width:100%;appearance:none;-webkit-appearance:none;outline:none;}
+    .field select:focus,.field input:focus{border-color:var(--muted);}
+    .select-wrap{position:relative;}
+    .select-wrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+    .unit-hint{font-size:11px;color:var(--hint);margin-top:3px;}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .side-toggle{display:flex;gap:8px;margin-bottom:12px;}
+    .side-btn{flex:1;padding:10px 8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all 0.15s;text-align:center;}
+    .side-btn.active{background:var(--nursing-bg);border-color:var(--nursing);color:var(--nursing);}
+    .side-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;}
+    .both-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .both-fields .field{margin-bottom:0;}
 
-    /* Fields */
-    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-    .field label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
-    .field select, .field input[type="datetime-local"], .field input[type="number"], .field input[type="text"] {
-      font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 600; padding: 11px 13px;
-      border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--surface2); color: var(--text); width: 100%;
-      appearance: none; -webkit-appearance: none; outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .field select:focus, .field input:focus { border-color: var(--muted); box-shadow: 0 0 0 3px rgba(138,168,200,0.15); }
-    .select-wrap { position: relative; }
-    .select-wrap::after { content: '▾'; position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-    .unit-hint { font-size: 11px; color: var(--hint); margin-top: 3px; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* BUTTONS */
+    .btn-log{width:100%;padding:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;border-radius:var(--radius-sm);border:none;color:#fff;cursor:pointer;margin-top:4px;transition:opacity 0.15s,transform 0.1s;}
+    .btn-log:hover{opacity:0.88;}
+    .btn-log:active{transform:scale(0.98);}
+    .btn-log:disabled{opacity:0.5;cursor:not-allowed;}
+    .btn-sleep{background:linear-gradient(135deg,var(--sleep),var(--sleep-dark));}
+    .btn-nursing{background:linear-gradient(135deg,var(--nursing),var(--nursing-dark));}
+    .btn-solids{background:linear-gradient(135deg,var(--solids),var(--solids-dark));}
+    .btn-outline{font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;padding:8px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;}
+    .btn-outline:hover{background:var(--surface2);}
+    .btn-danger-sm{background:none;border:none;color:var(--hint);cursor:pointer;font-size:15px;padding:0 0 0 6px;}
+    .btn-danger-sm:hover{color:var(--nursing);}
 
-    /* Side toggle */
-    .side-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
-    .side-btn { flex: 1; padding: 10px 8px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: center; }
-    .side-btn.active { background: var(--nursing-bg); border-color: var(--nursing); color: var(--nursing); }
-    .side-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
-    .both-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .both-fields .field { margin-bottom: 0; }
+    /* SLEEP TIMER */
+    .timer-section{display:flex;flex-direction:column;align-items:center;padding:1.5rem 0 1rem;}
+    .timer-display{font-size:52px;font-weight:900;color:var(--text);letter-spacing:-0.02em;margin-bottom:0.5rem;font-variant-numeric:tabular-nums;}
+    .timer-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:1.5rem;}
+    .timer-ring{position:relative;display:flex;align-items:center;justify-content:center;}
+    .timer-btn{width:140px;height:140px;border-radius:50%;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform 0.15s,filter 0.15s;position:relative;z-index:1;}
+    .timer-btn.start{background:linear-gradient(135deg,var(--sleep),var(--sleep-dark));}
+    .timer-btn.stop{background:linear-gradient(135deg,#ff6030,#cc3a10);}
+    .timer-btn:active{transform:scale(0.95);}
+    .timer-btn-icon{font-size:28px;}
+    .timer-ring-outer{position:absolute;width:160px;height:160px;border-radius:50%;border:2px dashed;animation:spin 20s linear infinite;}
+    .timer-ring-outer.sleep-ring{border-color:var(--sleep);opacity:0.4;}
+    .timer-ring-outer.stop-ring{border-color:#ff6030;opacity:0.4;}
+    @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+    .timer-start-time{font-size:12px;color:var(--muted);margin-top:1rem;text-align:center;}
 
-    /* Buttons */
-    .btn-log { width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; border-radius: var(--radius-sm); border: none; color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
-    .btn-log:hover { opacity: 0.88; }
-    .btn-log:active { transform: scale(0.98); }
-    .btn-log:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-sleep { background: linear-gradient(135deg, var(--sleep), var(--sleep-dark)); }
-    .btn-nursing { background: linear-gradient(135deg, var(--nursing), var(--nursing-dark)); }
-    .btn-solids { background: linear-gradient(135deg, var(--solids), var(--solids-dark)); }
-    .btn-outline { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; }
-    .btn-outline:hover { background: var(--surface2); }
+    /* MANUAL SLEEP FORM */
+    .manual-form{border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem;}
+    .manual-toggle{width:100%;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:1rem;}
+    .manual-toggle:hover{background:var(--surface2);}
 
-    /* Log list */
-    .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .log-list { display: flex; flex-direction: column; gap: 7px; }
-    .log-item { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); animation: slideIn 0.2s ease; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    .log-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .log-dot.sleep { background: var(--sleep); }
-    .log-dot.nursing { background: var(--nursing); }
-    .log-dot.solids { background: var(--solids); }
-    .log-info { flex: 1; min-width: 0; }
-    .log-type { font-size: 13px; font-weight: 700; color: var(--text); }
-    .log-amount { font-size: 12px; color: var(--muted); margin-top: 1px; }
-    .log-time { font-size: 11px; color: var(--hint); text-align: right; line-height: 1.4; white-space: nowrap; }
-    .btn-del { background: none; border: none; color: var(--hint); cursor: pointer; font-size: 15px; padding: 0 0 0 6px; }
-    .btn-del:hover { color: var(--nursing); }
-    .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 5px; }
-    .badge-sleep { background: var(--sleep-bg); color: var(--sleep); }
-    .badge-nursing { background: var(--nursing-bg); color: var(--nursing); }
-    .badge-solids { background: var(--solids-bg); color: var(--solids); }
-    .badge-who { background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+    /* LOG LIST */
+    .log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    .log-list{display:flex;flex-direction:column;gap:7px;}
+    .log-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);animation:slideIn 0.2s ease;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+    .log-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .log-dot.sleep{background:var(--sleep);}
+    .log-dot.nursing{background:var(--nursing);}
+    .log-dot.solids{background:var(--solids);}
+    .log-info{flex:1;min-width:0;}
+    .log-type{font-size:13px;font-weight:700;color:var(--text);}
+    .log-amount{font-size:12px;color:var(--muted);margin-top:1px;}
+    .log-time{font-size:11px;color:var(--hint);text-align:right;line-height:1.4;white-space:nowrap;}
+    .badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:5px;}
+    .badge-sleep{background:var(--sleep-bg);color:var(--sleep);}
+    .badge-nursing{background:var(--nursing-bg);color:var(--nursing);}
+    .badge-who{background:var(--surface);border:1px solid var(--border);color:var(--muted);}
 
-    .empty { text-align: center; padding: 2rem; color: var(--muted); font-size: 14px; line-height: 1.6; }
-    .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 14px; }
-    .hidden { display: none; }
+    /* EDIT MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--surface);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:400px;border:1px solid var(--border);}
+    .modal h3{font-size:16px;font-weight:800;color:var(--text);margin-bottom:1rem;}
+    .modal-btns{display:flex;gap:8px;margin-top:1rem;}
+    .modal-btns button{flex:1;}
 
-    /* ---- PROFILE SCREEN ---- */
-    #screen-profile { background: var(--bg); }
-    .profile-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
-    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 14px; }
-    .profile-card.active-child { border-color: var(--green); background: var(--green-bg); }
-    .profile-card-info { flex: 1; }
-    .profile-card-name { font-size: 16px; font-weight: 800; color: var(--text); }
-    .profile-card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .profile-card-actions { display: flex; gap: 8px; }
-    .btn-select { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--green); background: none; color: var(--green); cursor: pointer; }
-    .btn-select.selected { background: var(--green); color: #fff; }
-    .btn-small-del { background: none; border: none; color: var(--hint); cursor: pointer; font-size: 16px; padding: 4px; }
-    .btn-small-del:hover { color: var(--nursing); }
-    .add-child-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
-    .add-child-form h3 { font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    /* REPORTS */
+    .view-toggle{display:flex;background:var(--surface2);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:1rem;}
+    .view-btn{flex:1;padding:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;border:none;border-radius:8px;background:none;color:var(--muted);cursor:pointer;transition:all 0.15s;}
+    .view-btn.active{background:var(--sleep);color:#fff;}
 
-    /* Toast */
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 200; white-space: nowrap; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    /* DAYTIME VS NIGHTTIME */
+    .sleep-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+    .sleep-type-card{border-radius:var(--radius-sm);padding:1rem;text-align:center;border:1px solid var(--border);}
+    .sleep-type-card.day{background:#1a3a4a;border-color:#2d6a7a;}
+    .sleep-type-card.night{background:#0a1a2a;border-color:#1a3a5a;}
+    .sleep-type-icon{font-size:24px;margin-bottom:6px;}
+    .sleep-type-val{font-size:22px;font-weight:800;color:var(--text);}
+    .sleep-type-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;}
 
-    @media (max-width: 400px) { .field-row { grid-template-columns: 1fr; } .both-fields { grid-template-columns: 1fr; } }
+    /* WEEK TIMELINE */
+    .week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+    .week-nav-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;}
+    .week-nav-btn:hover{background:var(--surface2);}
+    .week-label{font-size:14px;font-weight:700;color:var(--text);}
+    .week-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -1rem;padding:0 1rem;}
+    .week-grid{display:flex;gap:8px;min-width:max-content;padding-bottom:8px;}
+    .day-col{display:flex;flex-direction:column;align-items:center;gap:6px;width:72px;}
+    .day-col-label{font-size:11px;font-weight:700;color:var(--muted);text-align:center;}
+    .day-col-date{font-size:13px;font-weight:800;color:var(--text);}
+    .day-timeline{width:44px;height:200px;background:var(--surface2);border-radius:6px;position:relative;overflow:hidden;}
+    .sleep-block{position:absolute;left:0;right:0;border-radius:3px;}
+    .sleep-block.night-sleep{background:var(--sleep);}
+    .sleep-block.day-sleep{background:#ffd54f;}
+    .timeline-labels{display:flex;flex-direction:column;justify-content:space-between;height:200px;padding:2px 0;width:32px;flex-shrink:0;}
+    .timeline-label{font-size:9px;color:var(--hint);font-weight:700;}
+
+    /* MONTH VIEW */
+    .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem;}
+    .month-day-label{font-size:10px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0;}
+    .month-day{aspect-ratio:1;border-radius:6px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);position:relative;cursor:default;}
+    .month-day.has-sleep{background:var(--sleep-bg);color:var(--sleep);}
+    .month-day.today{border:2px solid var(--sleep);}
+    .month-day-dot{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--sleep);}
+
+    /* LIST VIEW */
+    .list-date-group{margin-bottom:1rem;}
+    .list-date-header{font-size:12px;font-weight:700;color:var(--sleep);text-transform:uppercase;letter-spacing:0.06em;padding:6px 0;border-bottom:1px solid var(--sleep-bg);margin-bottom:8px;}
+
+    /* PROFILE */
+    .profile-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;}
+    .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;}
+    .profile-card.active-child{border-color:var(--green);background:var(--green-bg);}
+    .profile-card-info{flex:1;}
+    .profile-card-name{font-size:16px;font-weight:800;color:var(--text);}
+    .profile-card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+    .btn-select{font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid var(--green);background:none;color:var(--green);cursor:pointer;}
+    .btn-select.selected{background:var(--green);color:#fff;}
+
+    .empty{text-align:center;padding:2rem;color:var(--muted);font-size:14px;line-height:1.6;}
+    .loading{text-align:center;padding:2rem;color:var(--muted);font-size:14px;}
+    .hidden{display:none;}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;z-index:300;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    @media(max-width:400px){.field-row{grid-template-columns:1fr;}.both-fields{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
 
-<!-- ==================== HOME ==================== -->
+<!-- ========== HOME ========== -->
 <div class="screen active" id="screen-home">
   <div class="home-header">
     <button class="profile-btn" onclick="goTo('profile')">
@@ -202,35 +240,24 @@
     </button>
     <div class="sync-badge" id="syncDot"></div>
   </div>
-
   <div class="home-greeting">
     <h1>Today's tracker</h1>
     <p id="homeDateStr"></p>
   </div>
-
   <div class="widgets">
-    <!-- Sleep widget -->
     <button class="widget widget-sleep" onclick="goTo('sleep')">
       <div class="widget-label">Sleep</div>
       <div class="widget-sub" id="widget-sleep-sub">Tap to log sleep</div>
+      <div class="widget-sub2" id="widget-sleep-sub2"></div>
+      <div id="widget-sleep-timer-badge" class="widget-timer-badge hidden">● Recording</div>
       <div class="widget-icon">😴</div>
     </button>
-
-    <!-- Nursing + Bottle row -->
-    <div class="widget-row">
-      <button class="widget widget-nursing" onclick="goTo('nursing')">
-        <div class="widget-label">Nursing</div>
-        <div class="widget-sub" id="widget-nursing-sub">Tap to log feed</div>
-        <div class="widget-icon-sm">🤱</div>
-      </button>
-      <button class="widget widget-nursing" style="background:linear-gradient(135deg,#e05a20 0%,#aa2800 100%);" onclick="goTo('nursing')">
-        <div class="widget-label" style="font-size:18px;">Bottle</div>
-        <div class="widget-sub" id="widget-bottle-sub">Pumped / Formula</div>
-        <div class="widget-icon-sm">🍼</div>
-      </button>
-    </div>
-
-    <!-- Solids widget -->
+    <button class="widget widget-nursing" onclick="goTo('nursing')">
+      <div class="widget-label">Nursing & Bottle</div>
+      <div class="widget-sub" id="widget-nursing-sub">Tap to log feed</div>
+      <div class="widget-sub2" id="widget-nursing-sub2"></div>
+      <div class="widget-icon">🍼</div>
+    </button>
     <button class="widget widget-solids" onclick="goTo('solids')">
       <div class="widget-label">Solids</div>
       <div class="widget-sub" id="widget-solids-sub">Tap to log food</div>
@@ -239,7 +266,7 @@
   </div>
 </div>
 
-<!-- ==================== SLEEP ==================== -->
+<!-- ========== SLEEP ========== -->
 <div class="screen" id="screen-sleep">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('home')">←</button>
@@ -247,57 +274,154 @@
     <div class="sync-badge" id="syncDotSleep" style="width:8px;height:8px;border-radius:50%;background:var(--hint);"></div>
   </div>
   <div class="inner-body">
-    <div class="last-banner sleep-ok" id="sleepBanner">
-      <div class="banner-icon">😴</div>
-      <div class="banner-text">
-        <div class="banner-title" id="sleepBannerTitle">No sleep logged yet</div>
-        <div class="banner-sub" id="sleepBannerSub"></div>
-      </div>
-      <div class="banner-time" id="sleepBannerTime"></div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('sleep','log')">Log</button>
+      <button class="tab-btn" onclick="switchTab('sleep','reports')">Reports</button>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat"><div class="stat-val" id="sleepCount">0</div><div class="stat-lbl">Sleeps today</div></div>
-      <div class="stat"><div class="stat-val" id="sleepTotal">0h</div><div class="stat-lbl">Total today</div></div>
-      <div class="stat"><div class="stat-val" id="sleepLast">—</div><div class="stat-lbl">Last duration</div></div>
+    <!-- LOG TAB -->
+    <div class="tab-content active" id="sleep-tab-log">
+      <div class="last-banner sleep-ok" id="sleepBanner">
+        <div class="banner-icon">😴</div>
+        <div class="banner-text">
+          <div class="banner-title" id="sleepBannerTitle">No sleep logged yet</div>
+          <div class="banner-sub" id="sleepBannerSub"></div>
+        </div>
+        <div class="banner-time" id="sleepBannerTime"></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-val" id="sleepCount">0</div><div class="stat-lbl">Sleeps</div></div>
+        <div class="stat"><div class="stat-val" id="sleepTotal">0h</div><div class="stat-lbl">Total today</div></div>
+        <div class="stat"><div class="stat-val" id="sleepLast">—</div><div class="stat-lbl">Last nap</div></div>
+      </div>
+
+      <!-- Timer -->
+      <div class="card">
+        <div class="card-title">Sleep timer</div>
+        <div class="timer-section">
+          <div class="timer-display" id="timerDisplay">00:00:00</div>
+          <div class="timer-label" id="timerLabel">Ready to start</div>
+          <div class="timer-ring">
+            <div class="timer-ring-outer" id="timerRing" style="display:none;"></div>
+            <button class="timer-btn start" id="timerBtn" onclick="toggleTimer()">
+              <div class="timer-btn-icon" id="timerBtnIcon">▶</div>
+              <div id="timerBtnLabel">START</div>
+            </button>
+          </div>
+          <div class="timer-start-time" id="timerStartTime"></div>
+        </div>
+
+        <!-- Manual add toggle -->
+        <div class="manual-form">
+          <button class="manual-toggle" onclick="toggleManual()">+ Add sleep manually</button>
+          <div id="manualForm" class="hidden">
+            <div class="field">
+              <label>Who is logging?</label>
+              <div class="select-wrap">
+                <select id="sleepWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Sleep time</label><input type="datetime-local" id="sleepStart"/></div>
+              <div class="field"><label>Wake time</label><input type="datetime-local" id="sleepEnd"/></div>
+            </div>
+            <button class="btn-log btn-sleep" onclick="logSleepManual()">Save sleep</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="card">
+        <div class="log-header">
+          <span class="card-title" style="margin:0;">Sleep history</span>
+          <button class="btn-outline" onclick="showToast('Use ✕ to delete individual entries.')">Clear all</button>
+        </div>
+        <div class="log-list" id="sleepList"><div class="loading">Connecting...</div></div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">Log sleep</div>
-      <div class="field">
-        <label>Who is logging?</label>
-        <div class="select-wrap">
-          <select id="sleepWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
+    <!-- REPORTS TAB -->
+    <div class="tab-content" id="sleep-tab-reports">
+      <!-- Day/Night breakdown -->
+      <div class="card">
+        <div class="card-title">Today — day vs night</div>
+        <div class="sleep-breakdown">
+          <div class="sleep-type-card day">
+            <div class="sleep-type-icon">☀️</div>
+            <div class="sleep-type-val" id="daySleepVal">0h 0m</div>
+            <div class="sleep-type-lbl">Daytime</div>
+          </div>
+          <div class="sleep-type-card night">
+            <div class="sleep-type-icon">🌙</div>
+            <div class="sleep-type-val" id="nightSleepVal">0h 0m</div>
+            <div class="sleep-type-lbl">Nighttime</div>
+          </div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:0;">
+          <div class="stat"><div class="stat-val" id="rptFeeds">0</div><div class="stat-lbl">Sleeps today</div></div>
+          <div class="stat"><div class="stat-val" id="rptTotal">0h</div><div class="stat-lbl">Total today</div></div>
+          <div class="stat"><div class="stat-val" id="rptAvg">—</div><div class="stat-lbl">Avg duration</div></div>
         </div>
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Sleep time</label>
-          <input type="datetime-local" id="sleepStart" />
-        </div>
-        <div class="field">
-          <label>Wake time</label>
-          <input type="datetime-local" id="sleepEnd" />
-        </div>
-      </div>
-      <button class="btn-log btn-sleep" onclick="logSleep()">Log sleep</button>
-    </div>
 
-    <div class="card">
-      <div class="log-header">
-        <span class="card-title" style="margin:0;">Sleep history</span>
-        <button class="btn-outline" onclick="clearSection('sleep')">Clear all</button>
+      <!-- View toggle -->
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="switchView('day')">Day</button>
+        <button class="view-btn" onclick="switchView('week')">Week</button>
+        <button class="view-btn" onclick="switchView('month')">Month</button>
       </div>
-      <div class="log-list" id="sleepList"><div class="loading">Connecting...</div></div>
+
+      <!-- Day view -->
+      <div id="view-day" class="card">
+        <div class="card-title" id="dayViewLabel">Today</div>
+        <div class="log-list" id="dayViewList"><div class="empty">No sleeps today</div></div>
+      </div>
+
+      <!-- Week view -->
+      <div id="view-week" class="card hidden">
+        <div class="week-nav">
+          <button class="week-nav-btn" onclick="changeWeek(-1)">◀ Prev</button>
+          <div class="week-label" id="weekRangeLabel"></div>
+          <button class="week-nav-btn" onclick="changeWeek(1)">Next ▶</button>
+        </div>
+        <div class="week-scroll">
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div class="timeline-labels">
+              <div class="timeline-label">12a</div>
+              <div class="timeline-label">6a</div>
+              <div class="timeline-label">12p</div>
+              <div class="timeline-label">6p</div>
+              <div class="timeline-label">12a</div>
+            </div>
+            <div class="week-grid" id="weekGrid"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;color:var(--muted);font-weight:700;">
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--sleep);border-radius:2px;margin-right:4px;"></span>Night</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#ffd54f;border-radius:2px;margin-right:4px;"></span>Day</span>
+        </div>
+      </div>
+
+      <!-- Month view -->
+      <div id="view-month" class="card hidden">
+        <div class="week-nav">
+          <button class="week-nav-btn" onclick="changeMonth(-1)">◀ Prev</button>
+          <div class="week-label" id="monthLabel"></div>
+          <button class="week-nav-btn" onclick="changeMonth(1)">Next ▶</button>
+        </div>
+        <div class="month-grid" id="monthGrid"></div>
+      </div>
+
+      <!-- List view removed, integrated into history -->
     </div>
   </div>
 </div>
 
-<!-- ==================== NURSING ==================== -->
+<!-- ========== NURSING ========== -->
 <div class="screen" id="screen-nursing">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('home')">←</button>
-    <div class="inner-title">🤱 Nursing & Bottle</div>
+    <div class="inner-title">🍼 Nursing & Bottle</div>
     <div class="sync-badge" id="syncDotNursing" style="width:8px;height:8px;border-radius:50%;background:var(--hint);"></div>
   </div>
   <div class="inner-body">
@@ -309,20 +433,16 @@
       </div>
       <div class="banner-time" id="nursingBannerTime"></div>
     </div>
-
     <div class="stats-grid">
       <div class="stat"><div class="stat-val" id="nursingCount">0</div><div class="stat-lbl">Feeds today</div></div>
       <div class="stat"><div class="stat-val" id="nursingMl">0ml</div><div class="stat-lbl">Milk today</div></div>
       <div class="stat"><div class="stat-val" id="nursingMin">0m</div><div class="stat-lbl">Breast time</div></div>
     </div>
-
     <div class="card">
       <div class="card-title">Log a feed</div>
       <div class="field">
         <label>Who is logging?</label>
-        <div class="select-wrap">
-          <select id="nursingWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
-        </div>
+        <div class="select-wrap"><select id="nursingWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select></div>
       </div>
       <div class="field-row">
         <div class="field">
@@ -335,12 +455,8 @@
             </select>
           </div>
         </div>
-        <div class="field">
-          <label>Date &amp; time</label>
-          <input type="datetime-local" id="feedTime" />
-        </div>
+        <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="feedTime"/></div>
       </div>
-
       <div id="breastSection">
         <div class="side-label">Which side?</div>
         <div class="side-toggle">
@@ -350,46 +466,35 @@
         </div>
         <div id="singleSideField" class="field">
           <label id="singleSideLabel">Duration — left</label>
-          <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
+          <input type="number" id="feedAmount" min="0" step="1" placeholder="0"/>
           <div class="unit-hint">minutes on the breast</div>
         </div>
         <div id="bothSideFields" class="both-fields hidden">
-          <div class="field">
-            <label>Left side (min)</label>
-            <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
-          </div>
-          <div class="field">
-            <label>Right side (min)</label>
-            <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
-          </div>
+          <div class="field"><label>Left (min)</label><input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0"/></div>
+          <div class="field"><label>Right (min)</label><input type="number" id="feedAmountRight" min="0" step="1" placeholder="0"/></div>
         </div>
       </div>
-
       <div id="mlSection" class="field hidden">
         <label>Amount (ml)</label>
-        <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
-        <div class="unit-hint">millilitres</div>
+        <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0"/>
       </div>
-
       <button class="btn-log btn-nursing" id="feedBtn" onclick="logFeed()">Log feed</button>
     </div>
-
     <div class="card">
       <div class="log-header">
         <span class="card-title" style="margin:0;">Feed history</span>
-        <button class="btn-outline" onclick="clearSection('nursing')">Clear all</button>
+        <button class="btn-outline" onclick="showToast('Use ✕ to delete individual entries.')">Clear all</button>
       </div>
       <div class="log-list" id="nursingList"><div class="loading">Connecting...</div></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== SOLIDS ==================== -->
+<!-- ========== SOLIDS ========== -->
 <div class="screen" id="screen-solids">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('home')">←</button>
     <div class="inner-title">🥣 Solids</div>
-    <div class="sync-badge" id="syncDotSolids" style="width:8px;height:8px;border-radius:50%;background:var(--hint);"></div>
   </div>
   <div class="inner-body">
     <div class="last-banner solids-ok" id="solidsBanner">
@@ -400,37 +505,23 @@
       </div>
       <div class="banner-time" id="solidsBannerTime"></div>
     </div>
-
     <div class="stats-grid">
       <div class="stat"><div class="stat-val" id="solidsCount">0</div><div class="stat-lbl">Meals today</div></div>
       <div class="stat"><div class="stat-val" id="solidsGrams">0g</div><div class="stat-lbl">Amount today</div></div>
       <div class="stat"><div class="stat-val" id="solidsFoods">—</div><div class="stat-lbl">Last food</div></div>
     </div>
-
     <div class="card">
       <div class="card-title">Log solids</div>
       <div class="field">
         <label>Who is logging?</label>
-        <div class="select-wrap">
-          <select id="solidsWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
-        </div>
+        <div class="select-wrap"><select id="solidsWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select></div>
       </div>
       <div class="field-row">
-        <div class="field">
-          <label>Food / meal</label>
-          <input type="text" id="solidsFood" placeholder="e.g. Pureed carrot" />
-        </div>
-        <div class="field">
-          <label>Date &amp; time</label>
-          <input type="datetime-local" id="solidsTime" />
-        </div>
+        <div class="field"><label>Food / meal</label><input type="text" id="solidsFood" placeholder="e.g. Pureed carrot"/></div>
+        <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="solidsTime"/></div>
       </div>
       <div class="field-row">
-        <div class="field">
-          <label>Amount (grams)</label>
-          <input type="number" id="solidsAmount" min="0" step="1" placeholder="0" />
-          <div class="unit-hint">optional</div>
-        </div>
+        <div class="field"><label>Amount (grams)</label><input type="number" id="solidsAmount" min="0" step="1" placeholder="0"/><div class="unit-hint">optional</div></div>
         <div class="field">
           <label>Reaction</label>
           <div class="select-wrap">
@@ -447,18 +538,17 @@
       </div>
       <button class="btn-log btn-solids" onclick="logSolids()">Log solids</button>
     </div>
-
     <div class="card">
       <div class="log-header">
         <span class="card-title" style="margin:0;">Solids history</span>
-        <button class="btn-outline" onclick="clearSection('solids')">Clear all</button>
+        <button class="btn-outline" onclick="showToast('Use ✕ to delete individual entries.')">Clear all</button>
       </div>
       <div class="log-list" id="solidsList"><div class="loading">Connecting...</div></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== PROFILE ==================== -->
+<!-- ========== PROFILE ========== -->
 <div class="screen" id="screen-profile">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('home')">←</button>
@@ -469,17 +559,11 @@
       <div class="card-title">Your children</div>
       <div class="profile-list" id="profileList"></div>
     </div>
-    <div class="add-child-form">
-      <h3>Add a child</h3>
-      <div class="field">
-        <label>Name</label>
-        <input type="text" id="childName" placeholder="e.g. Oliver" />
-      </div>
+    <div class="card">
+      <div class="card-title">Add a child</div>
+      <div class="field"><label>Name</label><input type="text" id="childName" placeholder="e.g. Oliver"/></div>
       <div class="field-row">
-        <div class="field">
-          <label>Date of birth</label>
-          <input type="datetime-local" id="childDob" />
-        </div>
+        <div class="field"><label>Date of birth</label><input type="date" id="childDob"/></div>
         <div class="field">
           <label>Colour</label>
           <div class="select-wrap">
@@ -488,7 +572,6 @@
               <option value="#00c4d4">Teal</option>
               <option value="#ff7043">Orange</option>
               <option value="#e84c8b">Pink</option>
-              <option value="#7c5c3e">Brown</option>
               <option value="#5b6abf">Purple</option>
             </select>
           </div>
@@ -499,11 +582,24 @@
   </div>
 </div>
 
+<!-- Edit sleep modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>Edit sleep entry</h3>
+    <div class="field"><label>Sleep time</label><input type="datetime-local" id="editStart"/></div>
+    <div class="field"><label>Wake time</label><input type="datetime-local" id="editEnd"/></div>
+    <div class="modal-btns">
+      <button class="btn-outline" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-log btn-sleep" style="margin-top:0;" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCnc9On_G6p1bKMiUwoeLtbQ8taN9QhTX8",
@@ -516,20 +612,27 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  // Collections
   const feedsCol = collection(db, "feeds");
   const sleepCol = collection(db, "sleep");
   const solidsCol = collection(db, "solids");
 
   let allFeeds = [], allSleep = [], allSolids = [];
   let selectedSide = 'left';
-
-  // Children stored locally
   let children = JSON.parse(localStorage.getItem('children') || '[]');
   let activeChildId = localStorage.getItem('activeChildId') || null;
 
-  // If no children set up yet, create a default prompt
+  // Timer state
+  let timerRunning = false;
+  let timerStart = null;
+  let timerInterval = null;
+  let timerElapsed = 0;
+
+  // Reports state
+  let currentView = 'day';
+  let weekOffset = 0;
+  let monthOffset = 0;
+  let editingId = null;
+
   function getActiveChild() { return children.find(c => c.id === activeChildId) || null; }
 
   // ---- NAVIGATION ----
@@ -544,7 +647,23 @@
     if (screen === 'solids') setNow('solidsTime');
   }
 
-  // ---- TIME ----
+  window.switchTab = function(section, tab) {
+    document.querySelectorAll(`#screen-${section} .tab-btn`).forEach((b,i) => b.classList.toggle('active', b.textContent.toLowerCase().includes(tab)));
+    document.querySelectorAll(`#screen-${section} .tab-content`).forEach(c => c.classList.remove('active'));
+    document.getElementById(`${section}-tab-${tab}`).classList.add('active');
+    if (tab === 'reports') { renderReports(); }
+  }
+
+  window.switchView = function(view) {
+    currentView = view;
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === view));
+    document.getElementById('view-day').classList.toggle('hidden', view !== 'day');
+    document.getElementById('view-week').classList.toggle('hidden', view !== 'week');
+    document.getElementById('view-month').classList.toggle('hidden', view !== 'month');
+    renderReports();
+  }
+
+  // ---- TIME HELPERS ----
   function setNow(id) {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
@@ -566,53 +685,399 @@
     return { date: d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}), time: d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true}) };
   }
 
+  function fmtDuration(mins) {
+    const h = Math.floor(mins/60), m = mins%60;
+    if (h === 0) return m + 'm';
+    return h + 'h ' + m + 'm';
+  }
+
+  // ---- SLEEP TIMER ----
+  window.toggleTimer = function() {
+    if (!timerRunning) {
+      timerRunning = true;
+      timerStart = new Date();
+      timerInterval = setInterval(updateTimerDisplay, 1000);
+      const btn = document.getElementById('timerBtn');
+      btn.className = 'timer-btn stop';
+      document.getElementById('timerBtnIcon').textContent = '■';
+      document.getElementById('timerBtnLabel').textContent = 'STOP';
+      document.getElementById('timerLabel').textContent = 'Tracking sleep...';
+      const ring = document.getElementById('timerRing');
+      ring.className = 'timer-ring-outer stop-ring';
+      ring.style.display = 'block';
+      document.getElementById('timerStartTime').textContent = 'Started at ' + timerStart.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true});
+      document.getElementById('widget-sleep-timer-badge').classList.remove('hidden');
+    } else {
+      stopTimer(true);
+    }
+  }
+
+  function stopTimer(save) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    const endTime = new Date();
+    if (save && timerStart) {
+      const startStr = toLocalISO(timerStart);
+      const endStr = toLocalISO(endTime);
+      const durationMins = Math.round((endTime - timerStart) / 60000);
+      saveSlep(startStr, endStr, durationMins, document.getElementById('sleepWho').value);
+    }
+    timerStart = null; timerElapsed = 0;
+    document.getElementById('timerDisplay').textContent = '00:00:00';
+    document.getElementById('timerLabel').textContent = 'Ready to start';
+    document.getElementById('timerBtn').className = 'timer-btn start';
+    document.getElementById('timerBtnIcon').textContent = '▶';
+    document.getElementById('timerBtnLabel').textContent = 'START';
+    document.getElementById('timerRing').style.display = 'none';
+    document.getElementById('timerStartTime').textContent = '';
+    document.getElementById('widget-sleep-timer-badge').classList.add('hidden');
+  }
+
+  function updateTimerDisplay() {
+    const elapsed = Math.floor((new Date() - timerStart) / 1000);
+    const h = Math.floor(elapsed/3600).toString().padStart(2,'0');
+    const m = Math.floor((elapsed%3600)/60).toString().padStart(2,'0');
+    const s = (elapsed%60).toString().padStart(2,'0');
+    document.getElementById('timerDisplay').textContent = `${h}:${m}:${s}`;
+  }
+
+  function toLocalISO(d) {
+    const offset = d.getTimezoneOffset() * 60000;
+    return new Date(d - offset).toISOString().slice(0, 16);
+  }
+
+  window.toggleManual = function() {
+    document.getElementById('manualForm').classList.toggle('hidden');
+  }
+
+  window.logSleepManual = async function() {
+    const start = document.getElementById('sleepStart').value;
+    const end = document.getElementById('sleepEnd').value;
+    const who = document.getElementById('sleepWho').value;
+    if (!start || !end) { showToast('Please set sleep and wake times.'); return; }
+    if (new Date(end) <= new Date(start)) { showToast('Wake time must be after sleep time.'); return; }
+    const durationMins = Math.round((new Date(end) - new Date(start)) / 60000);
+    await saveSlep(start, end, durationMins, who);
+    document.getElementById('manualForm').classList.add('hidden');
+  }
+
+  async function saveSlep(startTime, endTime, durationMins, who) {
+    try {
+      await addDoc(sleepCol, { startTime, endTime, durationMins, who, childId: activeChildId || 'default', createdAt: serverTimestamp() });
+      showToast('Sleep logged! ' + fmtDuration(durationMins));
+    } catch(e) { showToast('Error saving sleep.'); }
+  }
+
+  // ---- EDIT SLEEP ----
+  window.openEditModal = function(id) {
+    const s = allSleep.find(s => s.id === id);
+    if (!s) return;
+    editingId = id;
+    document.getElementById('editStart').value = s.startTime;
+    document.getElementById('editEnd').value = s.endTime;
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  window.closeEditModal = function() {
+    document.getElementById('editModal').classList.remove('open');
+    editingId = null;
+  }
+
+  window.saveEdit = async function() {
+    const start = document.getElementById('editStart').value;
+    const end = document.getElementById('editEnd').value;
+    if (!start || !end || new Date(end) <= new Date(start)) { showToast('Invalid times.'); return; }
+    const durationMins = Math.round((new Date(end) - new Date(start)) / 60000);
+    try {
+      await updateDoc(doc(db, 'sleep', editingId), { startTime: start, endTime: end, durationMins });
+      showToast('Sleep updated!');
+      closeEditModal();
+    } catch(e) { showToast('Error updating.'); }
+  }
+
+  // ---- NURSING ----
+  window.selectSide = function(side) {
+    selectedSide = side;
+    ['left','right','both'].forEach(s => document.getElementById('btn'+s.charAt(0).toUpperCase()+s.slice(1)).classList.toggle('active', s===side));
+    document.getElementById('singleSideField').classList.toggle('hidden', side==='both');
+    document.getElementById('bothSideFields').classList.toggle('hidden', side!=='both');
+    if (side!=='both') document.getElementById('singleSideLabel').textContent = 'Duration — ' + side;
+  }
+
+  window.updateFeedFields = function() {
+    const type = document.getElementById('feedType').value;
+    document.getElementById('breastSection').classList.toggle('hidden', type!=='breast');
+    document.getElementById('mlSection').classList.toggle('hidden', type==='breast');
+  }
+
+  window.logFeed = async function() {
+    const type = document.getElementById('feedType').value;
+    const time = document.getElementById('feedTime').value;
+    const who = document.getElementById('nursingWho').value;
+    if (!time) { showToast('Please set a date and time.'); return; }
+    let feed = { type, time, who, childId: activeChildId || 'default', createdAt: serverTimestamp() };
+    if (type==='breast') {
+      if (selectedSide==='both') {
+        const left = parseFloat(document.getElementById('feedAmountLeft').value);
+        const right = parseFloat(document.getElementById('feedAmountRight').value);
+        if ((isNaN(left)||left<=0) && (isNaN(right)||right<=0)) { showToast('Enter at least one duration.'); return; }
+        feed.side='both'; feed.amountLeft=isNaN(left)?0:left; feed.amountRight=isNaN(right)?0:right; feed.amount=feed.amountLeft+feed.amountRight;
+      } else {
+        const amount = parseFloat(document.getElementById('feedAmount').value);
+        if (isNaN(amount)||amount<=0) { showToast('Please enter a duration.'); return; }
+        feed.side=selectedSide; feed.amount=amount;
+      }
+    } else {
+      const amount = parseFloat(document.getElementById('feedAmountMl').value);
+      if (isNaN(amount)||amount<=0) { showToast('Please enter an amount.'); return; }
+      feed.amount=amount;
+    }
+    const btn = document.getElementById('feedBtn');
+    btn.disabled=true; btn.textContent='Saving...';
+    try {
+      await addDoc(feedsCol, feed);
+      ['feedAmount','feedAmountLeft','feedAmountRight','feedAmountMl'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+      setNow('feedTime');
+      showToast('Feed logged!');
+    } catch(e) { showToast('Error saving.'); }
+    btn.disabled=false; btn.textContent='Log feed';
+  }
+
+  // ---- SOLIDS ----
+  window.logSolids = async function() {
+    const food = document.getElementById('solidsFood').value.trim();
+    const time = document.getElementById('solidsTime').value;
+    const who = document.getElementById('solidsWho').value;
+    if (!food) { showToast('Please enter a food name.'); return; }
+    if (!time) { showToast('Please set a time.'); return; }
+    const amount = parseFloat(document.getElementById('solidsAmount').value);
+    try {
+      await addDoc(solidsCol, { food, time, who, amount: isNaN(amount)?0:amount, reaction: document.getElementById('solidsReaction').value, childId: activeChildId||'default', createdAt: serverTimestamp() });
+      document.getElementById('solidsFood').value='';
+      document.getElementById('solidsAmount').value='';
+      document.getElementById('solidsReaction').value='';
+      setNow('solidsTime');
+      showToast('Solids logged!');
+    } catch(e) { showToast('Error saving.'); }
+  }
+
+  window.deleteEntry = async function(col, id) {
+    try { await deleteDoc(doc(db, col, id)); }
+    catch(e) { showToast('Error deleting.'); }
+  }
+
   // ---- HOME WIDGETS ----
   function updateHomeWidgets() {
     const child = getActiveChild();
     document.getElementById('homeChildName').textContent = child ? child.name : 'Set up profile';
     document.getElementById('homeAvatar').textContent = child ? child.name[0].toUpperCase() : '?';
     document.getElementById('homeAvatar').style.background = child ? child.colour : '#4caf7d';
-
-    const today = new Date().toDateString();
-    const dateStr = new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
-    document.getElementById('homeDateStr').textContent = dateStr;
-
-    // Sleep widget
-    const lastSleep = [...allSleep].sort((a,b) => new Date(b.endTime||b.startTime) - new Date(a.endTime||a.startTime))[0];
-    if (lastSleep) {
-      const ago = timeAgo(new Date(lastSleep.endTime || lastSleep.startTime));
-      document.getElementById('widget-sleep-sub').textContent = 'Last woke ' + ago.display;
-    }
+    document.getElementById('homeDateStr').textContent = new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});
 
     // Nursing widget
-    const lastFeed = [...allFeeds].sort((a,b) => new Date(b.time) - new Date(a.time))[0];
+    const lastFeed = [...allFeeds].sort((a,b)=>new Date(b.time)-new Date(a.time))[0];
     if (lastFeed) {
       const ago = timeAgo(new Date(lastFeed.time));
-      const type = lastFeed.type === 'breast' ? '🤱 Breast' : lastFeed.type === 'pumped' ? '🍼 Pumped' : '🍼 Formula';
-      document.getElementById('widget-nursing-sub').textContent = type + ' · ' + ago.display;
-      if (lastFeed.type !== 'breast') {
-        document.getElementById('widget-bottle-sub').textContent = ago.display;
-      }
+      const type = lastFeed.type==='breast'?'🤱 Breast':lastFeed.type==='pumped'?'🍼 Pumped':'🍼 Formula';
+      document.getElementById('widget-nursing-sub').textContent = 'Last feed — ' + ago.display;
+      document.getElementById('widget-nursing-sub2').textContent = type + (lastFeed.who ? ' · by ' + lastFeed.who : '');
+    }
+
+    // Sleep widget
+    const lastSleep = [...allSleep].sort((a,b)=>new Date(b.endTime||b.startTime)-new Date(a.endTime||a.startTime))[0];
+    if (lastSleep) {
+      const ago = timeAgo(new Date(lastSleep.endTime||lastSleep.startTime));
+      document.getElementById('widget-sleep-sub').textContent = 'Last woke — ' + ago.display;
+      document.getElementById('widget-sleep-sub2').textContent = 'Duration: ' + fmtDuration(lastSleep.durationMins);
+    }
+    if (timerRunning) {
+      document.getElementById('widget-sleep-timer-badge').classList.remove('hidden');
     }
 
     // Solids widget
-    const lastSolid = [...allSolids].sort((a,b) => new Date(b.time) - new Date(a.time))[0];
+    const lastSolid = [...allSolids].sort((a,b)=>new Date(b.time)-new Date(a.time))[0];
     if (lastSolid) {
       const ago = timeAgo(new Date(lastSolid.time));
-      document.getElementById('widget-solids-sub').textContent = (lastSolid.food || 'Food') + ' · ' + ago.display;
+      document.getElementById('widget-solids-sub').textContent = (lastSolid.food||'Food') + ' · ' + ago.display;
     }
   }
 
-  // ---- CHILD PROFILES ----
+  // ---- RENDER NURSING ----
+  function renderNursing(feeds) {
+    const sorted = [...feeds].sort((a,b)=>new Date(b.time)-new Date(a.time));
+    const last = sorted[0];
+    const today = feeds.filter(f=>isToday(f.time));
+    const banner = document.getElementById('nursingBanner');
+    if (last) {
+      const ago = timeAgo(new Date(last.time));
+      document.getElementById('nursingBannerTitle').textContent = 'Last feed — ' + (last.type==='breast'?'Breast':last.type==='pumped'?'Pumped':'Formula') + (last.who?' by '+last.who:'');
+      document.getElementById('nursingBannerSub').textContent = new Date(last.time).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true});
+      document.getElementById('nursingBannerTime').textContent = ago.display;
+      banner.className = 'last-banner ' + (ago.mins<120?'ok':ago.mins<180?'warn':'alert');
+    }
+    document.getElementById('nursingCount').textContent = today.length;
+    document.getElementById('nursingMl').textContent = today.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0)+'ml';
+    document.getElementById('nursingMin').textContent = today.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0)+'m';
+    const list = document.getElementById('nursingList');
+    if (sorted.length===0) { list.innerHTML='<div class="empty">No feeds logged yet.</div>'; return; }
+    list.innerHTML = sorted.map(f => {
+      const dt = formatDT(f.time);
+      const type = f.type==='breast'?'Breast':f.type==='pumped'?'Pumped':'Formula';
+      const amt = f.type==='breast'?(f.side==='both'?`L:${f.amountLeft}m R:${f.amountRight}m (${f.amount}m)`:f.amount+'m on '+f.side):f.amount+'ml';
+      return `<div class="log-item"><div class="log-dot nursing"></div><div class="log-info"><div class="log-type">${type}${f.side&&f.type==='breast'?`<span class="badge badge-nursing">${f.side==='both'?'both':f.side}</span>`:''}</div><div class="log-amount">${amt}${f.who?' · '+f.who:''}</div></div><div class="log-time">${dt.date}<br>${dt.time}</div><button class="btn-danger-sm" onclick="deleteEntry('feeds','${f.id}')">✕</button></div>`;
+    }).join('');
+  }
+
+  // ---- RENDER SLEEP ----
+  function renderSleep(sleeps) {
+    const sorted = [...sleeps].sort((a,b)=>new Date(b.endTime||b.startTime)-new Date(a.endTime||a.startTime));
+    const last = sorted[0];
+    const today = sleeps.filter(s=>isToday(s.endTime||s.startTime));
+    if (last) {
+      const ago = timeAgo(new Date(last.endTime||last.startTime));
+      document.getElementById('sleepBannerTitle').textContent = 'Last woke up';
+      document.getElementById('sleepBannerSub').textContent = 'Slept ' + fmtDuration(last.durationMins||0);
+      document.getElementById('sleepBannerTime').textContent = ago.display;
+    }
+    document.getElementById('sleepCount').textContent = today.length;
+    const totalMins = today.reduce((s,sl)=>s+(sl.durationMins||0),0);
+    document.getElementById('sleepTotal').textContent = fmtDuration(totalMins);
+    document.getElementById('sleepLast').textContent = last ? fmtDuration(last.durationMins||0) : '—';
+
+    const list = document.getElementById('sleepList');
+    if (sorted.length===0) { list.innerHTML='<div class="empty">No sleep logged yet.</div>'; return; }
+    list.innerHTML = sorted.map(s => {
+      const start = formatDT(s.startTime);
+      const end = s.endTime ? formatDT(s.endTime) : null;
+      return `<div class="log-item"><div class="log-dot sleep"></div><div class="log-info"><div class="log-type">Sleep <span class="badge badge-sleep">${fmtDuration(s.durationMins||0)}</span></div><div class="log-amount">${start.time} → ${end?end.time:'ongoing'}${s.who?' · '+s.who:''}</div></div><div class="log-time">${start.date}</div><button class="btn-danger-sm" onclick="openEditModal('${s.id}')" title="Edit">✏️</button><button class="btn-danger-sm" onclick="deleteEntry('sleep','${s.id}')">✕</button></div>`;
+    }).join('');
+  }
+
+  // ---- RENDER SOLIDS ----
+  function renderSolids(solids) {
+    const sorted = [...solids].sort((a,b)=>new Date(b.time)-new Date(a.time));
+    const last = sorted[0];
+    const today = solids.filter(s=>isToday(s.time));
+    if (last) {
+      const ago = timeAgo(new Date(last.time));
+      document.getElementById('solidsBannerTitle').textContent = last.food+(last.who?' · '+last.who:'');
+      document.getElementById('solidsBannerSub').textContent = last.reaction||'';
+      document.getElementById('solidsBannerTime').textContent = ago.display;
+    }
+    document.getElementById('solidsCount').textContent = today.length;
+    document.getElementById('solidsGrams').textContent = today.reduce((s,sl)=>s+(sl.amount||0),0)+'g';
+    document.getElementById('solidsFoods').textContent = last ? last.food.split(' ')[0] : '—';
+    const list = document.getElementById('solidsList');
+    if (sorted.length===0) { list.innerHTML='<div class="empty">No solids logged yet.</div>'; return; }
+    list.innerHTML = sorted.map(s => {
+      const dt = formatDT(s.time);
+      return `<div class="log-item"><div class="log-dot solids"></div><div class="log-info"><div class="log-type">${s.food}</div><div class="log-amount">${s.amount?s.amount+'g · ':''}${s.reaction||''}${s.who?' · '+s.who:''}</div></div><div class="log-time">${dt.date}<br>${dt.time}</div><button class="btn-danger-sm" onclick="deleteEntry('solids','${s.id}')">✕</button></div>`;
+    }).join('');
+  }
+
+  // ---- REPORTS ----
+  function renderReports() {
+    const now = new Date();
+    // Day/night breakdown for today
+    const todaySleeps = allSleep.filter(s => isToday(s.endTime || s.startTime));
+    let dayMins = 0, nightMins = 0;
+    todaySleeps.forEach(s => {
+      const h = new Date(s.startTime).getHours();
+      if (h >= 7 && h < 20) dayMins += s.durationMins||0;
+      else nightMins += s.durationMins||0;
+    });
+    document.getElementById('daySleepVal').textContent = fmtDuration(dayMins);
+    document.getElementById('nightSleepVal').textContent = fmtDuration(nightMins);
+    document.getElementById('rptFeeds').textContent = todaySleeps.length;
+    const totalMins = todaySleeps.reduce((s,sl)=>s+(sl.durationMins||0),0);
+    document.getElementById('rptTotal').textContent = fmtDuration(totalMins);
+    document.getElementById('rptAvg').textContent = todaySleeps.length ? fmtDuration(Math.round(totalMins/todaySleeps.length)) : '—';
+
+    if (currentView === 'day') renderDayView();
+    if (currentView === 'week') renderWeekView();
+    if (currentView === 'month') renderMonthView();
+  }
+
+  function renderDayView() {
+    const now = new Date();
+    document.getElementById('dayViewLabel').textContent = now.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});
+    const today = allSleep.filter(s=>isToday(s.endTime||s.startTime)).sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));
+    const list = document.getElementById('dayViewList');
+    if (today.length===0) { list.innerHTML='<div class="empty">No sleeps today</div>'; return; }
+    list.innerHTML = today.map(s => {
+      const st = formatDT(s.startTime);
+      const en = s.endTime ? formatDT(s.endTime) : null;
+      const h = new Date(s.startTime).getHours();
+      const isDay = h>=7&&h<20;
+      return `<div class="log-item"><div class="log-dot sleep" style="background:${isDay?'#ffd54f':'var(--sleep)'}"></div><div class="log-info"><div class="log-type">${isDay?'☀️ Daytime':'🌙 Nighttime'} nap</div><div class="log-amount">${st.time} → ${en?en.time:'ongoing'} · ${fmtDuration(s.durationMins||0)}</div></div></div>`;
+    }).join('');
+  }
+
+  window.changeWeek = function(dir) { weekOffset += dir; renderWeekView(); }
+  window.changeMonth = function(dir) { monthOffset += dir; renderMonthView(); }
+
+  function renderWeekView() {
+    const now = new Date();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - now.getDay() + 1 + weekOffset * 7);
+    const days = Array.from({length:7},(_,i) => { const d=new Date(monday); d.setDate(monday.getDate()+i); return d; });
+    const start = days[0].toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+    const end = days[6].toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+    document.getElementById('weekRangeLabel').textContent = start + ' – ' + end;
+
+    const grid = document.getElementById('weekGrid');
+    grid.innerHTML = days.map(day => {
+      const dayStr = day.toDateString();
+      const daySleeps = allSleep.filter(s => new Date(s.startTime).toDateString()===dayStr || new Date(s.endTime||s.startTime).toDateString()===dayStr);
+      const isToday = day.toDateString()===now.toDateString();
+      const dayLabel = day.toLocaleDateString('en-AU',{weekday:'short'});
+      const dateLabel = day.getDate();
+
+      const blocks = daySleeps.map(s => {
+        const start = new Date(s.startTime);
+        const end = s.endTime ? new Date(s.endTime) : new Date(start.getTime()+(s.durationMins||30)*60000);
+        const startMins = start.getHours()*60+start.getMinutes();
+        const endMins = end.getHours()*60+end.getMinutes();
+        const topPct = (startMins / 1440) * 100;
+        const heightPct = ((endMins - startMins) / 1440) * 100;
+        const h = start.getHours();
+        const isDay = h>=7&&h<20;
+        return `<div class="sleep-block ${isDay?'day-sleep':'night-sleep'}" style="top:${topPct}%;height:${Math.max(heightPct,2)}%;"></div>`;
+      }).join('');
+
+      return `<div class="day-col">
+        <div class="day-col-label">${dayLabel}</div>
+        <div class="day-col-date" style="${isToday?'color:var(--sleep)':''}">${dateLabel}</div>
+        <div class="day-timeline">${blocks}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderMonthView() {
+    const now = new Date();
+    const target = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+    document.getElementById('monthLabel').textContent = target.toLocaleDateString('en-AU',{month:'long',year:'numeric'});
+    const daysInMonth = new Date(target.getFullYear(), target.getMonth()+1, 0).getDate();
+    const firstDay = new Date(target.getFullYear(), target.getMonth(), 1).getDay();
+    const grid = document.getElementById('monthGrid');
+    const dayLabels = ['S','M','T','W','T','F','S'];
+    let html = dayLabels.map(d=>`<div class="month-day-label">${d}</div>`).join('');
+    for (let i=0; i<firstDay; i++) html += `<div class="month-day"></div>`;
+    for (let d=1; d<=daysInMonth; d++) {
+      const date = new Date(target.getFullYear(), target.getMonth(), d);
+      const dateStr = date.toDateString();
+      const hasSleep = allSleep.some(s => new Date(s.startTime).toDateString()===dateStr);
+      const isTd = dateStr === now.toDateString();
+      html += `<div class="month-day ${hasSleep?'has-sleep':''} ${isTd?'today':''}">${d}${hasSleep?'<div class="month-day-dot"></div>':''}</div>`;
+    }
+    grid.innerHTML = html;
+  }
+
+  // ---- PROFILES ----
   window.addChild = function() {
     const name = document.getElementById('childName').value.trim();
     if (!name) { showToast('Please enter a name.'); return; }
-    const child = {
-      id: Date.now().toString(),
-      name,
-      dob: document.getElementById('childDob').value,
-      colour: document.getElementById('childColour').value
-    };
+    const child = { id: Date.now().toString(), name, dob: document.getElementById('childDob').value, colour: document.getElementById('childColour').value };
     children.push(child);
     if (!activeChildId) activeChildId = child.id;
     saveChildren();
@@ -626,275 +1091,51 @@
     saveChildren();
     renderProfiles();
     updateHomeWidgets();
-    showToast('Switched to ' + getActiveChild()?.name);
   }
 
   window.deleteChild = function(id) {
     if (!confirm('Remove this child?')) return;
-    children = children.filter(c => c.id !== id);
-    if (activeChildId === id) activeChildId = children[0]?.id || null;
+    children = children.filter(c=>c.id!==id);
+    if (activeChildId===id) activeChildId = children[0]?.id||null;
     saveChildren();
     renderProfiles();
   }
 
   function saveChildren() {
     localStorage.setItem('children', JSON.stringify(children));
-    localStorage.setItem('activeChildId', activeChildId || '');
+    localStorage.setItem('activeChildId', activeChildId||'');
   }
 
   function renderProfiles() {
     const list = document.getElementById('profileList');
-    if (children.length === 0) {
-      list.innerHTML = '<div class="empty">No children added yet. Add one below!</div>';
-      return;
-    }
+    if (children.length===0) { list.innerHTML='<div class="empty">No children added yet.</div>'; return; }
     list.innerHTML = children.map(c => `
-      <div class="profile-card ${c.id === activeChildId ? 'active-child' : ''}">
+      <div class="profile-card ${c.id===activeChildId?'active-child':''}">
         <div class="avatar" style="background:${c.colour};">${c.name[0].toUpperCase()}</div>
         <div class="profile-card-info">
           <div class="profile-card-name">${c.name}</div>
-          <div class="profile-card-sub">${c.dob ? 'Born ' + new Date(c.dob).toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}) : 'No DOB set'}</div>
+          <div class="profile-card-sub">${c.dob?'Born '+new Date(c.dob).toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}):'No DOB set'}</div>
         </div>
-        <div class="profile-card-actions">
-          <button class="btn-select ${c.id === activeChildId ? 'selected' : ''}" onclick="selectChild('${c.id}')">${c.id === activeChildId ? '✓ Active' : 'Select'}</button>
-          <button class="btn-small-del" onclick="deleteChild('${c.id}')">🗑️</button>
-        </div>
-      </div>
-    `).join('');
+        <button class="btn-select ${c.id===activeChildId?'selected':''}" onclick="selectChild('${c.id}')">${c.id===activeChildId?'✓ Active':'Select'}</button>
+        <button class="btn-danger-sm" onclick="deleteChild('${c.id}')">🗑️</button>
+      </div>`).join('');
   }
 
-  // ---- NURSING / FEEDS ----
-  window.selectSide = function(side) {
-    selectedSide = side;
-    ['left','right','both'].forEach(s => {
-      document.getElementById('btn' + s.charAt(0).toUpperCase() + s.slice(1)).classList.toggle('active', s === side);
-    });
-    document.getElementById('singleSideField').classList.toggle('hidden', side === 'both');
-    document.getElementById('bothSideFields').classList.toggle('hidden', side !== 'both');
-    if (side !== 'both') document.getElementById('singleSideLabel').textContent = 'Duration — ' + side;
-  }
-
-  window.updateFeedFields = function() {
-    const type = document.getElementById('feedType').value;
-    document.getElementById('breastSection').classList.toggle('hidden', type !== 'breast');
-    document.getElementById('mlSection').classList.toggle('hidden', type === 'breast');
-  }
-
-  window.logFeed = async function() {
-    const type = document.getElementById('feedType').value;
-    const time = document.getElementById('feedTime').value;
-    const who = document.getElementById('nursingWho').value;
-    if (!time) { showToast('Please set a date and time.'); return; }
-
-    let feed = { type, time, who, childId: activeChildId || 'default', createdAt: serverTimestamp() };
-
-    if (type === 'breast') {
-      if (selectedSide === 'both') {
-        const left = parseFloat(document.getElementById('feedAmountLeft').value);
-        const right = parseFloat(document.getElementById('feedAmountRight').value);
-        if ((isNaN(left)||left<=0) && (isNaN(right)||right<=0)) { showToast('Enter at least one duration.'); return; }
-        feed.side = 'both'; feed.amountLeft = isNaN(left)?0:left; feed.amountRight = isNaN(right)?0:right; feed.amount = feed.amountLeft + feed.amountRight;
-      } else {
-        const amount = parseFloat(document.getElementById('feedAmount').value);
-        if (isNaN(amount)||amount<=0) { showToast('Please enter a duration.'); return; }
-        feed.side = selectedSide; feed.amount = amount;
-      }
-    } else {
-      const amount = parseFloat(document.getElementById('feedAmountMl').value);
-      if (isNaN(amount)||amount<=0) { showToast('Please enter an amount.'); return; }
-      feed.amount = amount;
-    }
-
-    const btn = document.getElementById('feedBtn');
-    btn.disabled = true; btn.textContent = 'Saving...';
-    try {
-      await addDoc(feedsCol, feed);
-      ['feedAmount','feedAmountLeft','feedAmountRight','feedAmountMl'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-      setNow('feedTime');
-      showToast('Feed logged!');
-    } catch(e) { showToast('Error saving.'); console.error(e); }
-    btn.disabled = false; btn.textContent = 'Log feed';
-  }
-
-  // ---- SLEEP ----
-  window.logSleep = async function() {
-    const start = document.getElementById('sleepStart').value;
-    const end = document.getElementById('sleepEnd').value;
-    const who = document.getElementById('sleepWho').value;
-    if (!start || !end) { showToast('Please set sleep and wake times.'); return; }
-    if (new Date(end) <= new Date(start)) { showToast('Wake time must be after sleep time.'); return; }
-
-    const durationMins = Math.round((new Date(end) - new Date(start)) / 60000);
-    const sleep = { startTime: start, endTime: end, durationMins, who, childId: activeChildId || 'default', createdAt: serverTimestamp() };
-
-    try {
-      await addDoc(sleepCol, sleep);
-      setNow('sleepStart'); setNow('sleepEnd');
-      showToast('Sleep logged!');
-    } catch(e) { showToast('Error saving.'); }
-  }
-
-  // ---- SOLIDS ----
-  window.logSolids = async function() {
-    const food = document.getElementById('solidsFood').value.trim();
-    const time = document.getElementById('solidsTime').value;
-    const who = document.getElementById('solidsWho').value;
-    if (!food) { showToast('Please enter a food name.'); return; }
-    if (!time) { showToast('Please set a time.'); return; }
-
-    const amount = parseFloat(document.getElementById('solidsAmount').value);
-    const solid = {
-      food, time, who,
-      amount: isNaN(amount) ? 0 : amount,
-      reaction: document.getElementById('solidsReaction').value,
-      childId: activeChildId || 'default',
-      createdAt: serverTimestamp()
-    };
-
-    try {
-      await addDoc(solidsCol, solid);
-      document.getElementById('solidsFood').value = '';
-      document.getElementById('solidsAmount').value = '';
-      document.getElementById('solidsReaction').value = '';
-      setNow('solidsTime');
-      showToast('Solids logged!');
-    } catch(e) { showToast('Error saving.'); }
-  }
-
-  // ---- CLEAR ----
-  window.clearSection = function(section) {
-    showToast('Use the ✕ button to delete individual entries.');
-  }
-
-  window.deleteEntry = async function(col, id) {
-    try {
-      await deleteDoc(doc(db, col, id));
-    } catch(e) { showToast('Error deleting.'); }
-  }
-
-  // ---- RENDER HELPERS ----
-  function renderNursing(feeds) {
-    const sorted = [...feeds].sort((a,b) => new Date(b.time) - new Date(a.time));
-    const lastFeed = sorted[0] || null;
-    const todayFeeds = feeds.filter(f => isToday(f.time));
-
-    // Banner
-    const banner = document.getElementById('nursingBanner');
-    if (lastFeed) {
-      const ago = timeAgo(new Date(lastFeed.time));
-      const who = lastFeed.who ? ' by ' + lastFeed.who : '';
-      const type = lastFeed.type === 'breast' ? 'Breast' : lastFeed.type === 'pumped' ? 'Pumped' : 'Formula';
-      document.getElementById('nursingBannerTitle').textContent = 'Last feed — ' + type + who;
-      document.getElementById('nursingBannerSub').textContent = new Date(lastFeed.time).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true});
-      document.getElementById('nursingBannerTime').textContent = ago.display;
-      banner.className = 'last-banner ' + (ago.mins < 120 ? 'nursing-ok' : ago.mins < 180 ? 'nursing-warn' : 'nursing-alert');
-    }
-
-    // Stats
-    document.getElementById('nursingCount').textContent = todayFeeds.length;
-    document.getElementById('nursingMl').textContent = todayFeeds.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0) + 'ml';
-    document.getElementById('nursingMin').textContent = todayFeeds.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0) + 'm';
-
-    // List
-    const list = document.getElementById('nursingList');
-    if (sorted.length === 0) { list.innerHTML = '<div class="empty">No feeds logged yet.</div>'; return; }
-    list.innerHTML = sorted.map(f => {
-      const dt = formatDT(f.time);
-      const type = f.type==='breast'?'Breast':f.type==='pumped'?'Pumped':'Formula';
-      const amt = f.type==='breast'?(f.side==='both'?`L:${f.amountLeft}m R:${f.amountRight}m (${f.amount}m total)`:f.amount+'m on '+f.side):f.amount+'ml';
-      return `<div class="log-item">
-        <div class="log-dot nursing"></div>
-        <div class="log-info">
-          <div class="log-type">${type}${f.side&&f.type==='breast'?`<span class="badge badge-nursing">${f.side==='both'?'both':f.side}</span>`:''}</div>
-          <div class="log-amount">${amt}${f.who?` · ${f.who}`:''}</div>
-        </div>
-        <div class="log-time">${dt.date}<br>${dt.time}</div>
-        <button class="btn-del" onclick="deleteEntry('feeds','${f.id}')">✕</button>
-      </div>`;
-    }).join('');
-  }
-
-  function renderSleep(sleeps) {
-    const sorted = [...sleeps].sort((a,b) => new Date(b.endTime||b.startTime) - new Date(a.endTime||a.startTime));
-    const lastSleep = sorted[0] || null;
-    const todaySleeps = sleeps.filter(s => isToday(s.endTime || s.startTime));
-
-    if (lastSleep) {
-      const ago = timeAgo(new Date(lastSleep.endTime || lastSleep.startTime));
-      document.getElementById('sleepBannerTitle').textContent = 'Last woke up';
-      document.getElementById('sleepBannerSub').textContent = 'Slept ' + Math.floor(lastSleep.durationMins/60) + 'h ' + (lastSleep.durationMins%60) + 'm';
-      document.getElementById('sleepBannerTime').textContent = ago.display;
-    }
-
-    document.getElementById('sleepCount').textContent = todaySleeps.length;
-    const totalMins = todaySleeps.reduce((s,sl) => s + (sl.durationMins||0), 0);
-    document.getElementById('sleepTotal').textContent = Math.floor(totalMins/60) + 'h ' + (totalMins%60) + 'm';
-    document.getElementById('sleepLast').textContent = lastSleep ? Math.floor(lastSleep.durationMins/60) + 'h ' + (lastSleep.durationMins%60) + 'm' : '—';
-
-    const list = document.getElementById('sleepList');
-    if (sorted.length === 0) { list.innerHTML = '<div class="empty">No sleep logged yet.</div>'; return; }
-    list.innerHTML = sorted.map(s => {
-      const start = formatDT(s.startTime);
-      const end = s.endTime ? formatDT(s.endTime) : null;
-      return `<div class="log-item">
-        <div class="log-dot sleep"></div>
-        <div class="log-info">
-          <div class="log-type">Sleep · ${Math.floor(s.durationMins/60)}h ${s.durationMins%60}m</div>
-          <div class="log-amount">${start.time} → ${end?end.time:'ongoing'}${s.who?' · '+s.who:''}</div>
-        </div>
-        <div class="log-time">${start.date}</div>
-        <button class="btn-del" onclick="deleteEntry('sleep','${s.id}')">✕</button>
-      </div>`;
-    }).join('');
-  }
-
-  function renderSolids(solids) {
-    const sorted = [...solids].sort((a,b) => new Date(b.time) - new Date(a.time));
-    const lastSolid = sorted[0] || null;
-    const todaySolids = solids.filter(s => isToday(s.time));
-
-    if (lastSolid) {
-      const ago = timeAgo(new Date(lastSolid.time));
-      document.getElementById('solidsBannerTitle').textContent = lastSolid.food + (lastSolid.who ? ' · ' + lastSolid.who : '');
-      document.getElementById('solidsBannerSub').textContent = lastSolid.reaction || '';
-      document.getElementById('solidsBannerTime').textContent = ago.display;
-    }
-
-    document.getElementById('solidsCount').textContent = todaySolids.length;
-    document.getElementById('solidsGrams').textContent = todaySolids.reduce((s,sl)=>s+(sl.amount||0),0) + 'g';
-    document.getElementById('solidsFoods').textContent = lastSolid ? lastSolid.food.split(' ')[0] : '—';
-
-    const list = document.getElementById('solidsList');
-    if (sorted.length === 0) { list.innerHTML = '<div class="empty">No solids logged yet.</div>'; return; }
-    list.innerHTML = sorted.map(s => {
-      const dt = formatDT(s.time);
-      return `<div class="log-item">
-        <div class="log-dot solids"></div>
-        <div class="log-info">
-          <div class="log-type">${s.food}</div>
-          <div class="log-amount">${s.amount?s.amount+'g · ':''}${s.reaction||''}${s.who?' · '+s.who:''}</div>
-        </div>
-        <div class="log-time">${dt.date}<br>${dt.time}</div>
-        <button class="btn-del" onclick="deleteEntry('solids','${s.id}')">✕</button>
-      </div>`;
-    }).join('');
-  }
-
-  // ---- FIREBASE LISTENERS ----
-  onSnapshot(query(feedsCol, orderBy("createdAt","desc")), snap => {
+  // ---- FIREBASE ----
+  onSnapshot(query(feedsCol,orderBy("createdAt","desc")), snap => {
     document.getElementById('syncDot').classList.add('live');
     allFeeds = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderNursing(allFeeds);
     updateHomeWidgets();
-  }, err => { document.getElementById('syncDot').classList.remove('live'); });
+  }, () => document.getElementById('syncDot').classList.remove('live'));
 
-  onSnapshot(query(sleepCol, orderBy("createdAt","desc")), snap => {
+  onSnapshot(query(sleepCol,orderBy("createdAt","desc")), snap => {
     allSleep = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderSleep(allSleep);
     updateHomeWidgets();
   });
 
-  onSnapshot(query(solidsCol, orderBy("createdAt","desc")), snap => {
+  onSnapshot(query(solidsCol,orderBy("createdAt","desc")), snap => {
     allSolids = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderSolids(allSolids);
     updateHomeWidgets();
@@ -902,16 +1143,13 @@
 
   // ---- INIT ----
   updateHomeWidgets();
-  setNow('feedTime');
-  setNow('sleepStart');
-  setNow('sleepEnd');
-  setNow('solidsTime');
+  setNow('feedTime'); setNow('sleepStart'); setNow('sleepEnd'); setNow('solidsTime');
+  setInterval(() => { if (allFeeds.length>0||allSleep.length>0) updateHomeWidgets(); }, 60000);
 
-  function showToast(msg) {
+  window.showToast = function(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2500);
   }
 </script>
 </body>

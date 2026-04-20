@@ -3,301 +3,498 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Baby Feed Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Baby Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #faf9f7; --surface: #ffffff; --surface2: #f4f2ee;
-      --border: #e8e4dc; --text: #1a1714; --muted: #6b6560; --hint: #a09b95;
-      --accent: #c17b4e; --accent-light: #f5ede4;
-      --breast: #c0546e; --breast-light: #fceef2;
-      --pumped: #5b6abf; --pumped-light: #eef0fb;
-      --formula: #3a9e7a; --formula-light: #e6f7f1;
-      --warn: #e08c2a; --warn-light: #fef3e2;
-      --radius: 14px; --radius-sm: 8px;
+      --bg: #0f1b2d;
+      --surface: #1a2d45;
+      --surface2: #243852;
+      --border: #2d4a6a;
+      --text: #f0f4f8;
+      --muted: #8aa8c8;
+      --hint: #4a6a8a;
+      --sleep: #00c4d4;
+      --sleep-dark: #008a97;
+      --sleep-bg: #003d45;
+      --nursing: #ff7043;
+      --nursing-dark: #c4440a;
+      --nursing-bg: #4a1a08;
+      --solids: #e84c8b;
+      --solids-dark: #a8205a;
+      --solids-bg: #3d0a20;
+      --green: #4caf7d;
+      --green-bg: #0a2d1a;
+      --accent: #ffd54f;
+      --radius: 18px;
+      --radius-sm: 10px;
     }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    html, body { height: 100%; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-    /* Header */
-    .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }
-    .hamburger { background: none; border: none; cursor: pointer; padding: 4px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.25s; }
-    .page-title { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 400; color: var(--text); flex: 1; }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; flex-shrink: 0; transition: background 0.3s; }
-    .sync-dot.live { background: var(--formula); }
+    /* ---- SCREENS ---- */
+    .screen { display: none; min-height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
 
-    /* Drawer overlay */
-    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-    .drawer-overlay.open { opacity: 1; pointer-events: all; }
+    /* ---- HOME SCREEN ---- */
+    #screen-home { padding: 0; }
+    .home-header { padding: 1.25rem 1.25rem 0.75rem; display: flex; align-items: center; justify-content: space-between; }
+    .profile-btn { display: flex; align-items: center; gap: 10px; background: var(--surface); border: none; border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer; transition: background 0.15s; }
+    .profile-btn:hover { background: var(--surface2); }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #fff; flex-shrink: 0; }
+    .profile-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .profile-sub { font-size: 11px; color: var(--muted); }
+    .sync-badge { width: 10px; height: 10px; border-radius: 50%; background: var(--hint); transition: background 0.3s; }
+    .sync-badge.live { background: var(--green); }
 
-    /* Drawer */
-    .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: var(--surface); z-index: 101; transition: left 0.28s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
-    .drawer.open { left: 0; }
-    .drawer-header { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-    .drawer-icon { width: 36px; height: 36px; background: var(--accent-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .drawer-title { font-family: 'DM Serif Display', serif; font-size: 17px; font-weight: 400; color: var(--text); }
-    .drawer-subtitle { font-size: 11px; color: var(--muted); }
-    .drawer-nav { padding: 0.75rem 0; flex: 1; }
-    .nav-item { display: flex; align-items: center; gap: 14px; padding: 13px 1.25rem; cursor: pointer; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; }
-    .nav-item:hover { background: var(--surface2); }
-    .nav-item.active { background: var(--accent-light); }
-    .nav-item.active .nav-label { color: var(--accent); font-weight: 500; }
-    .nav-item.active .nav-icon { background: var(--accent-light); }
-    .nav-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-    .nav-label { font-size: 15px; color: var(--text); }
-    .nav-divider { height: 1px; background: var(--border); margin: 0.5rem 1.25rem; }
-    .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); font-size: 11px; color: var(--hint); }
+    .home-greeting { padding: 0.5rem 1.25rem 1rem; }
+    .home-greeting h1 { font-size: 22px; font-weight: 800; color: var(--text); }
+    .home-greeting p { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
-    /* Pages */
-    .page { display: none; max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
-    .page.active { display: block; }
+    /* Widget tiles */
+    .widgets { padding: 0 1rem 2rem; display: flex; flex-direction: column; gap: 12px; }
+    .widget { border-radius: var(--radius); padding: 1.4rem 1.4rem; cursor: pointer; position: relative; overflow: hidden; border: none; width: 100%; text-align: left; transition: transform 0.15s, filter 0.15s; }
+    .widget:active { transform: scale(0.97); filter: brightness(0.92); }
+    .widget-sleep { background: linear-gradient(135deg, #00b4c4 0%, #0088a0 100%); min-height: 110px; }
+    .widget-row { display: flex; gap: 12px; }
+    .widget-row .widget { flex: 1; min-height: 110px; }
+    .widget-nursing { background: linear-gradient(135deg, #ff6030 0%, #cc3a10 100%); }
+    .widget-solids { background: linear-gradient(135deg, #e8408a 0%, #b01860 100%); min-height: 110px; }
+    .widget-label { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
+    .widget-sub { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; font-weight: 600; }
+    .widget-icon { position: absolute; right: 16px; bottom: 14px; font-size: 40px; opacity: 0.25; }
+    .widget-icon-sm { position: absolute; right: 12px; bottom: 10px; font-size: 30px; opacity: 0.25; }
+    .widget-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.2); border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
+
+    /* ---- INNER SCREENS ---- */
+    .inner-header { background: var(--surface); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); }
+    .back-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; padding: 0; line-height: 1; flex-shrink: 0; }
+    .inner-title { font-size: 18px; font-weight: 800; color: var(--text); flex: 1; }
+    .inner-body { flex: 1; padding: 1.25rem 1rem 4rem; max-width: 520px; margin: 0 auto; width: 100%; }
+
+    /* Sleep screen colours */
+    #screen-sleep .inner-header { border-bottom-color: var(--sleep-dark); }
+    #screen-sleep .inner-title { color: var(--sleep); }
+    #screen-nursing .inner-header { border-bottom-color: var(--nursing-dark); }
+    #screen-nursing .inner-title { color: var(--nursing); }
+    #screen-solids .inner-header { border-bottom-color: var(--solids-dark); }
+    #screen-solids .inner-title { color: var(--solids); }
 
     /* Cards */
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
-    .card-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .card-title { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
 
-    /* Last feed banner */
-    .last-feed-banner { border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 14px; border: 1px solid var(--border); background: var(--surface); transition: all 0.3s; }
-    .last-feed-banner.ok { background: var(--formula-light); border-color: var(--formula); }
-    .last-feed-banner.warn { background: var(--warn-light); border-color: var(--warn); }
-    .last-feed-banner.alert { background: var(--breast-light); border-color: var(--breast); }
+    /* Last event banner */
+    .last-banner { border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 14px; border: 1px solid var(--border); background: var(--surface); }
+    .last-banner.sleep-ok { background: var(--sleep-bg); border-color: var(--sleep-dark); }
+    .last-banner.nursing-ok { background: var(--nursing-bg); border-color: var(--nursing-dark); }
+    .last-banner.nursing-warn { background: #3a1500; border-color: #cc5500; }
+    .last-banner.nursing-alert { background: #3a0808; border-color: var(--nursing-dark); }
+    .last-banner.solids-ok { background: var(--solids-bg); border-color: var(--solids-dark); }
     .banner-icon { font-size: 26px; flex-shrink: 0; }
     .banner-text { flex: 1; }
-    .banner-title { font-size: 14px; font-weight: 500; color: var(--text); }
+    .banner-title { font-size: 14px; font-weight: 700; color: var(--text); }
     .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .banner-time { font-size: 24px; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .banner-time { font-size: 22px; font-weight: 800; color: var(--text); white-space: nowrap; }
 
     /* Stats */
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
     .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
-    .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
-    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+    .stat-val { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1; }
+    .stat-lbl { font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
 
-    /* Form */
+    /* Fields */
     .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-    .field label { font-size: 12px; font-weight: 500; color: var(--muted); }
-    .field select, .field input[type="datetime-local"], .field input[type="number"] {
-      font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 12px;
+    .field label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .field select, .field input[type="datetime-local"], .field input[type="number"], .field input[type="text"] {
+      font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 600; padding: 11px 13px;
       border-radius: var(--radius-sm); border: 1px solid var(--border);
       background: var(--surface2); color: var(--text); width: 100%;
       appearance: none; -webkit-appearance: none; outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .field select:focus, .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #c17b4e22; background: var(--surface); }
+    .field select:focus, .field input:focus { border-color: var(--muted); box-shadow: 0 0 0 3px rgba(138,168,200,0.15); }
     .select-wrap { position: relative; }
-    .select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 13px; }
-    .unit-hint { font-size: 12px; color: var(--hint); margin-top: 3px; }
+    .select-wrap::after { content: '▾'; position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    .unit-hint { font-size: 11px; color: var(--hint); margin-top: 3px; }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Side toggle */
     .side-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
-    .side-btn { flex: 1; padding: 10px 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: center; }
-    .side-btn:hover { border-color: var(--breast); color: var(--breast); }
-    .side-btn.active { background: var(--breast-light); border-color: var(--breast); color: var(--breast); }
-    .side-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+    .side-btn { flex: 1; padding: 10px 8px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: center; }
+    .side-btn.active { background: var(--nursing-bg); border-color: var(--nursing); color: var(--nursing); }
+    .side-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
     .both-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .both-fields .field { margin-bottom: 0; }
-    .btn-log { width: 100%; padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
-    .btn-log:hover { opacity: 0.9; }
+
+    /* Buttons */
+    .btn-log { width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; border-radius: var(--radius-sm); border: none; color: #fff; cursor: pointer; margin-top: 4px; transition: opacity 0.15s, transform 0.1s; }
+    .btn-log:hover { opacity: 0.88; }
     .btn-log:active { transform: scale(0.98); }
     .btn-log:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-sleep { background: linear-gradient(135deg, var(--sleep), var(--sleep-dark)); }
+    .btn-nursing { background: linear-gradient(135deg, var(--nursing), var(--nursing-dark)); }
+    .btn-solids { background: linear-gradient(135deg, var(--solids), var(--solids-dark)); }
+    .btn-outline { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; }
+    .btn-outline:hover { background: var(--surface2); }
 
-    /* Chart */
-    .chart-hours { display: flex; gap: 2px; align-items: flex-end; height: 80px; }
-    .chart-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
-    .chart-bar { border-radius: 3px 3px 0 0; min-height: 3px; }
-    .chart-bar.breast { background: var(--breast); }
-    .chart-bar.pumped { background: var(--pumped); }
-    .chart-bar.formula { background: var(--formula); }
-    .chart-labels { display: flex; gap: 2px; margin-top: 4px; }
-    .chart-label { flex: 1; font-size: 9px; color: var(--hint); text-align: center; }
-    .chart-legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .legend-dot.breast { background: var(--breast); }
-    .legend-dot.pumped { background: var(--pumped); }
-    .legend-dot.formula { background: var(--formula); }
-    .chart-empty { text-align: center; padding: 1.5rem; color: var(--hint); font-size: 13px; }
-
-    /* History */
-    .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .btn-clear { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer; }
-    .btn-clear:hover { background: var(--surface2); }
+    /* Log list */
+    .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .log-list { display: flex; flex-direction: column; gap: 7px; }
     .log-item { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); animation: slideIn 0.2s ease; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     .log-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .log-dot.breast { background: var(--breast); }
-    .log-dot.pumped { background: var(--pumped); }
-    .log-dot.formula { background: var(--formula); }
+    .log-dot.sleep { background: var(--sleep); }
+    .log-dot.nursing { background: var(--nursing); }
+    .log-dot.solids { background: var(--solids); }
     .log-info { flex: 1; min-width: 0; }
-    .log-type-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-    .log-type { font-size: 13px; font-weight: 500; color: var(--text); }
-    .badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 999px; }
-    .badge.breast { background: var(--breast-light); color: var(--breast); }
-    .badge.pumped { background: var(--pumped-light); color: var(--pumped); }
-    .badge.formula { background: var(--formula-light); color: var(--formula); }
-    .badge.who { background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
-    .log-amount { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .log-time { font-size: 11px; color: var(--hint); white-space: nowrap; text-align: right; line-height: 1.4; }
-    .btn-del { background: none; border: none; color: var(--hint); cursor: pointer; font-size: 15px; padding: 0 0 0 4px; line-height: 1; flex-shrink: 0; }
-    .btn-del:hover { color: var(--breast); }
+    .log-type { font-size: 13px; font-weight: 700; color: var(--text); }
+    .log-amount { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .log-time { font-size: 11px; color: var(--hint); text-align: right; line-height: 1.4; white-space: nowrap; }
+    .btn-del { background: none; border: none; color: var(--hint); cursor: pointer; font-size: 15px; padding: 0 0 0 6px; }
+    .btn-del:hover { color: var(--nursing); }
+    .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 5px; }
+    .badge-sleep { background: var(--sleep-bg); color: var(--sleep); }
+    .badge-nursing { background: var(--nursing-bg); color: var(--nursing); }
+    .badge-solids { background: var(--solids-bg); color: var(--solids); }
+    .badge-who { background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
 
-    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 14px; line-height: 1.6; }
-    .empty-icon { font-size: 36px; margin-bottom: 10px; }
-    .hidden { display: none; }
+    .empty { text-align: center; padding: 2rem; color: var(--muted); font-size: 14px; line-height: 1.6; }
     .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 14px; }
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--text); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 200; white-space: nowrap; }
+    .hidden { display: none; }
+
+    /* ---- PROFILE SCREEN ---- */
+    #screen-profile { background: var(--bg); }
+    .profile-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
+    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 14px; }
+    .profile-card.active-child { border-color: var(--green); background: var(--green-bg); }
+    .profile-card-info { flex: 1; }
+    .profile-card-name { font-size: 16px; font-weight: 800; color: var(--text); }
+    .profile-card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .profile-card-actions { display: flex; gap: 8px; }
+    .btn-select { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--green); background: none; color: var(--green); cursor: pointer; }
+    .btn-select.selected { background: var(--green); color: #fff; }
+    .btn-small-del { background: none; border: none; color: var(--hint); cursor: pointer; font-size: 16px; padding: 4px; }
+    .btn-small-del:hover { color: var(--nursing); }
+    .add-child-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .add-child-form h3 { font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 200; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    @media (max-width: 400px) { .field-row { grid-template-columns: 1fr; } }
+
+    @media (max-width: 400px) { .field-row { grid-template-columns: 1fr; } .both-fields { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="app-header">
-  <button class="hamburger" onclick="toggleDrawer()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="page-title" id="pageTitle">Home</div>
-  <div class="sync-dot" id="syncDot"></div>
-</header>
-
-<!-- Drawer overlay -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-
-<!-- Drawer -->
-<div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <div class="drawer-icon">🍼</div>
-    <div>
-      <div class="drawer-title">Baby Feed Tracker</div>
-      <div class="drawer-subtitle">Shared live tracker</div>
-    </div>
+<!-- ==================== HOME ==================== -->
+<div class="screen active" id="screen-home">
+  <div class="home-header">
+    <button class="profile-btn" onclick="goTo('profile')">
+      <div class="avatar" id="homeAvatar" style="background:#4caf7d;">?</div>
+      <div>
+        <div class="profile-name" id="homeChildName">Set up profile</div>
+        <div class="profile-sub">Tap to manage</div>
+      </div>
+    </button>
+    <div class="sync-badge" id="syncDot"></div>
   </div>
-  <nav class="drawer-nav">
-    <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
-      <div class="nav-icon">🏠</div>
-      <div class="nav-label">Home</div>
+
+  <div class="home-greeting">
+    <h1>Today's tracker</h1>
+    <p id="homeDateStr"></p>
+  </div>
+
+  <div class="widgets">
+    <!-- Sleep widget -->
+    <button class="widget widget-sleep" onclick="goTo('sleep')">
+      <div class="widget-label">Sleep</div>
+      <div class="widget-sub" id="widget-sleep-sub">Tap to log sleep</div>
+      <div class="widget-icon">😴</div>
     </button>
-    <button class="nav-item" data-page="history" onclick="navigateTo('history')">
-      <div class="nav-icon">📋</div>
-      <div class="nav-label">Feed history</div>
+
+    <!-- Nursing + Bottle row -->
+    <div class="widget-row">
+      <button class="widget widget-nursing" onclick="goTo('nursing')">
+        <div class="widget-label">Nursing</div>
+        <div class="widget-sub" id="widget-nursing-sub">Tap to log feed</div>
+        <div class="widget-icon-sm">🤱</div>
+      </button>
+      <button class="widget widget-nursing" style="background:linear-gradient(135deg,#e05a20 0%,#aa2800 100%);" onclick="goTo('nursing')">
+        <div class="widget-label" style="font-size:18px;">Bottle</div>
+        <div class="widget-sub" id="widget-bottle-sub">Pumped / Formula</div>
+        <div class="widget-icon-sm">🍼</div>
+      </button>
+    </div>
+
+    <!-- Solids widget -->
+    <button class="widget widget-solids" onclick="goTo('solids')">
+      <div class="widget-label">Solids</div>
+      <div class="widget-sub" id="widget-solids-sub">Tap to log food</div>
+      <div class="widget-icon">🥣</div>
     </button>
-    <button class="nav-item" data-page="summary" onclick="navigateTo('summary')">
-      <div class="nav-icon">📊</div>
-      <div class="nav-label">Daily summary</div>
-    </button>
-  </nav>
-  <div class="drawer-footer">Feeds are shared in real time</div>
+  </div>
 </div>
 
-<!-- HOME PAGE -->
-<div class="page active" id="page-home">
-
-  <!-- Last feed banner -->
-  <div class="last-feed-banner" id="lastFeedBanner">
-    <div class="banner-icon">🍼</div>
-    <div class="banner-text">
-      <div class="banner-title" id="bannerTitle">Waiting for data...</div>
-      <div class="banner-sub" id="bannerSub"></div>
-    </div>
-    <div class="banner-time" id="bannerTime"></div>
+<!-- ==================== SLEEP ==================== -->
+<div class="screen" id="screen-sleep">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <div class="inner-title">😴 Sleep</div>
+    <div class="sync-badge" id="syncDotSleep" style="width:8px;height:8px;border-radius:50%;background:var(--hint);"></div>
   </div>
-
-  <!-- Today's stats -->
-  <div class="summary-grid">
-    <div class="stat"><div class="stat-val" id="totalFeeds">0</div><div class="stat-lbl">Feeds today</div></div>
-    <div class="stat"><div class="stat-val" id="totalMl">0 ml</div><div class="stat-lbl">Milk today</div></div>
-    <div class="stat"><div class="stat-val" id="totalMin">0 min</div><div class="stat-lbl">Breast time</div></div>
-  </div>
-
-  <!-- Log form -->
-  <div class="card">
-    <div class="card-title">Log a feed</div>
-    <div class="field">
-      <label>Who is logging?</label>
-      <div class="select-wrap">
-        <select id="whoLogging">
-          <option value="Mum">Mum</option>
-          <option value="Dad">Dad</option>
-        </select>
+  <div class="inner-body">
+    <div class="last-banner sleep-ok" id="sleepBanner">
+      <div class="banner-icon">😴</div>
+      <div class="banner-text">
+        <div class="banner-title" id="sleepBannerTitle">No sleep logged yet</div>
+        <div class="banner-sub" id="sleepBannerSub"></div>
       </div>
+      <div class="banner-time" id="sleepBannerTime"></div>
     </div>
-    <div class="field-row">
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val" id="sleepCount">0</div><div class="stat-lbl">Sleeps today</div></div>
+      <div class="stat"><div class="stat-val" id="sleepTotal">0h</div><div class="stat-lbl">Total today</div></div>
+      <div class="stat"><div class="stat-val" id="sleepLast">—</div><div class="stat-lbl">Last duration</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Log sleep</div>
       <div class="field">
-        <label>Feed type</label>
+        <label>Who is logging?</label>
         <div class="select-wrap">
-          <select id="feedType" onchange="updateFields()">
-            <option value="breast">Breast (boob)</option>
-            <option value="pumped">Pumped breast milk</option>
-            <option value="formula">Formula</option>
-          </select>
+          <select id="sleepWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
         </div>
       </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Sleep time</label>
+          <input type="datetime-local" id="sleepStart" />
+        </div>
+        <div class="field">
+          <label>Wake time</label>
+          <input type="datetime-local" id="sleepEnd" />
+        </div>
+      </div>
+      <button class="btn-log btn-sleep" onclick="logSleep()">Log sleep</button>
+    </div>
+
+    <div class="card">
+      <div class="log-header">
+        <span class="card-title" style="margin:0;">Sleep history</span>
+        <button class="btn-outline" onclick="clearSection('sleep')">Clear all</button>
+      </div>
+      <div class="log-list" id="sleepList"><div class="loading">Connecting...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== NURSING ==================== -->
+<div class="screen" id="screen-nursing">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <div class="inner-title">🤱 Nursing & Bottle</div>
+    <div class="sync-badge" id="syncDotNursing" style="width:8px;height:8px;border-radius:50%;background:var(--hint);"></div>
+  </div>
+  <div class="inner-body">
+    <div class="last-banner" id="nursingBanner">
+      <div class="banner-icon">🍼</div>
+      <div class="banner-text">
+        <div class="banner-title" id="nursingBannerTitle">No feeds logged yet</div>
+        <div class="banner-sub" id="nursingBannerSub"></div>
+      </div>
+      <div class="banner-time" id="nursingBannerTime"></div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val" id="nursingCount">0</div><div class="stat-lbl">Feeds today</div></div>
+      <div class="stat"><div class="stat-val" id="nursingMl">0ml</div><div class="stat-lbl">Milk today</div></div>
+      <div class="stat"><div class="stat-val" id="nursingMin">0m</div><div class="stat-lbl">Breast time</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Log a feed</div>
       <div class="field">
-        <label>Date &amp; time</label>
-        <input type="datetime-local" id="feedTime" />
-      </div>
-    </div>
-    <div id="breastSideSection">
-      <div class="side-label">Which side?</div>
-      <div class="side-toggle">
-        <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
-        <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
-        <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
-      </div>
-      <div id="singleSideField" class="field">
-        <label id="singleSideLabel">Duration — left side</label>
-        <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
-        <div class="unit-hint">minutes on the breast</div>
-      </div>
-      <div id="bothSideFields" class="both-fields hidden">
-        <div class="field">
-          <label>Duration — left side</label>
-          <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
-          <div class="unit-hint">minutes</div>
-        </div>
-        <div class="field">
-          <label>Duration — right side</label>
-          <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
-          <div class="unit-hint">minutes</div>
+        <label>Who is logging?</label>
+        <div class="select-wrap">
+          <select id="nursingWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
         </div>
       </div>
-    </div>
-    <div id="mlSection" class="field hidden">
-      <label>Amount</label>
-      <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
-      <div class="unit-hint">millilitres (ml)</div>
-    </div>
-    <button class="btn-log" id="logBtn" onclick="logFeed()">Log feed</button>
-  </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Feed type</label>
+          <div class="select-wrap">
+            <select id="feedType" onchange="updateFeedFields()">
+              <option value="breast">Breast (boob)</option>
+              <option value="pumped">Pumped milk</option>
+              <option value="formula">Formula</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Date &amp; time</label>
+          <input type="datetime-local" id="feedTime" />
+        </div>
+      </div>
 
+      <div id="breastSection">
+        <div class="side-label">Which side?</div>
+        <div class="side-toggle">
+          <button class="side-btn active" id="btnLeft" onclick="selectSide('left')">Left</button>
+          <button class="side-btn" id="btnRight" onclick="selectSide('right')">Right</button>
+          <button class="side-btn" id="btnBoth" onclick="selectSide('both')">Both</button>
+        </div>
+        <div id="singleSideField" class="field">
+          <label id="singleSideLabel">Duration — left</label>
+          <input type="number" id="feedAmount" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">minutes on the breast</div>
+        </div>
+        <div id="bothSideFields" class="both-fields hidden">
+          <div class="field">
+            <label>Left side (min)</label>
+            <input type="number" id="feedAmountLeft" min="0" step="1" placeholder="0" />
+          </div>
+          <div class="field">
+            <label>Right side (min)</label>
+            <input type="number" id="feedAmountRight" min="0" step="1" placeholder="0" />
+          </div>
+        </div>
+      </div>
+
+      <div id="mlSection" class="field hidden">
+        <label>Amount (ml)</label>
+        <input type="number" id="feedAmountMl" min="0" step="1" placeholder="0" />
+        <div class="unit-hint">millilitres</div>
+      </div>
+
+      <button class="btn-log btn-nursing" id="feedBtn" onclick="logFeed()">Log feed</button>
+    </div>
+
+    <div class="card">
+      <div class="log-header">
+        <span class="card-title" style="margin:0;">Feed history</span>
+        <button class="btn-outline" onclick="clearSection('nursing')">Clear all</button>
+      </div>
+      <div class="log-list" id="nursingList"><div class="loading">Connecting...</div></div>
+    </div>
+  </div>
 </div>
 
-<!-- HISTORY PAGE -->
-<div class="page" id="page-history">
-  <div class="card">
-    <div class="log-header">
-      <span style="font-size:13px;color:var(--muted);">All logged feeds</span>
-      <button class="btn-clear" onclick="clearAll()">Clear all</button>
+<!-- ==================== SOLIDS ==================== -->
+<div class="screen" id="screen-solids">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <div class="inner-title">🥣 Solids</div>
+    <div class="sync-badge" id="syncDotSolids" style="width:8px;height:8px;border-radius:50%;background:var(--hint);"></div>
+  </div>
+  <div class="inner-body">
+    <div class="last-banner solids-ok" id="solidsBanner">
+      <div class="banner-icon">🥣</div>
+      <div class="banner-text">
+        <div class="banner-title" id="solidsBannerTitle">No solids logged yet</div>
+        <div class="banner-sub" id="solidsBannerSub"></div>
+      </div>
+      <div class="banner-time" id="solidsBannerTime"></div>
     </div>
-    <div class="log-list" id="logList"><div class="loading">Connecting to database...</div></div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val" id="solidsCount">0</div><div class="stat-lbl">Meals today</div></div>
+      <div class="stat"><div class="stat-val" id="solidsGrams">0g</div><div class="stat-lbl">Amount today</div></div>
+      <div class="stat"><div class="stat-val" id="solidsFoods">—</div><div class="stat-lbl">Last food</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Log solids</div>
+      <div class="field">
+        <label>Who is logging?</label>
+        <div class="select-wrap">
+          <select id="solidsWho"><option value="Mum">Mum</option><option value="Dad">Dad</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Food / meal</label>
+          <input type="text" id="solidsFood" placeholder="e.g. Pureed carrot" />
+        </div>
+        <div class="field">
+          <label>Date &amp; time</label>
+          <input type="datetime-local" id="solidsTime" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Amount (grams)</label>
+          <input type="number" id="solidsAmount" min="0" step="1" placeholder="0" />
+          <div class="unit-hint">optional</div>
+        </div>
+        <div class="field">
+          <label>Reaction</label>
+          <div class="select-wrap">
+            <select id="solidsReaction">
+              <option value="">No notes</option>
+              <option>Loved it! 😍</option>
+              <option>Liked it 😊</option>
+              <option>Neutral 😐</option>
+              <option>Didn't like it 😕</option>
+              <option>Allergic reaction ⚠️</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn-log btn-solids" onclick="logSolids()">Log solids</button>
+    </div>
+
+    <div class="card">
+      <div class="log-header">
+        <span class="card-title" style="margin:0;">Solids history</span>
+        <button class="btn-outline" onclick="clearSection('solids')">Clear all</button>
+      </div>
+      <div class="log-list" id="solidsList"><div class="loading">Connecting...</div></div>
+    </div>
   </div>
 </div>
 
-<!-- SUMMARY PAGE -->
-<div class="page" id="page-summary">
-  <div class="card">
-    <div class="card-title">Today's feeds by hour</div>
-    <div id="chartWrap"><div class="chart-empty">No feeds logged today yet</div></div>
+<!-- ==================== PROFILE ==================== -->
+<div class="screen" id="screen-profile">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <div class="inner-title">👶 Children</div>
   </div>
-  <div class="card">
-    <div class="card-title">Today's totals</div>
-    <div class="summary-grid" style="margin-bottom:0;">
-      <div class="stat"><div class="stat-val" id="totalFeeds2">0</div><div class="stat-lbl">Feeds today</div></div>
-      <div class="stat"><div class="stat-val" id="totalMl2">0 ml</div><div class="stat-lbl">Milk today</div></div>
-      <div class="stat"><div class="stat-val" id="totalMin2">0 min</div><div class="stat-lbl">Breast time</div></div>
+  <div class="inner-body">
+    <div class="card">
+      <div class="card-title">Your children</div>
+      <div class="profile-list" id="profileList"></div>
+    </div>
+    <div class="add-child-form">
+      <h3>Add a child</h3>
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="childName" placeholder="e.g. Oliver" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date of birth</label>
+          <input type="datetime-local" id="childDob" />
+        </div>
+        <div class="field">
+          <label>Colour</label>
+          <div class="select-wrap">
+            <select id="childColour">
+              <option value="#4caf7d">Green</option>
+              <option value="#00c4d4">Teal</option>
+              <option value="#ff7043">Orange</option>
+              <option value="#e84c8b">Pink</option>
+              <option value="#7c5c3e">Brown</option>
+              <option value="#5b6abf">Purple</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn-log btn-sleep" onclick="addChild()">Add child</button>
     </div>
   </div>
 </div>
@@ -306,97 +503,201 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyC-rrRTpPvJdcR-KY8dhvkSNyNnethPhOA",
-    authDomain: "baby-feeding-tracker-aus.firebaseapp.com",
-    projectId: "baby-feeding-tracker-aus",
-    storageBucket: "baby-feeding-tracker-aus.firebasestorage.app",
-    messagingSenderId: "847354921925",
-    appId: "1:847354921925:web:29caf269ddd39123b341ac"
+    apiKey: "AIzaSyCnc9On_G6p1bKMiUwoeLtbQ8taN9QhTX8",
+    authDomain: "baby-feed-tracker-2a8e1.firebaseapp.com",
+    projectId: "baby-feed-tracker-2a8e1",
+    storageBucket: "baby-feed-tracker-2a8e1.firebasestorage.app",
+    messagingSenderId: "327869935703",
+    appId: "1:327869935703:web:40532de632a26bf95b3312"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const feedsCol = collection(db, "feeds");
 
+  // Collections
+  const feedsCol = collection(db, "feeds");
+  const sleepCol = collection(db, "sleep");
+  const solidsCol = collection(db, "solids");
+
+  let allFeeds = [], allSleep = [], allSolids = [];
   let selectedSide = 'left';
-  let allFeeds = [];
+
+  // Children stored locally
+  let children = JSON.parse(localStorage.getItem('children') || '[]');
+  let activeChildId = localStorage.getItem('activeChildId') || null;
+
+  // If no children set up yet, create a default prompt
+  function getActiveChild() { return children.find(c => c.id === activeChildId) || null; }
 
   // ---- NAVIGATION ----
-  const pageTitles = { home: 'Home', history: 'Feed history', summary: 'Daily summary' };
-
-  window.toggleDrawer = function() {
-    document.getElementById('drawer').classList.toggle('open');
-    document.getElementById('drawerOverlay').classList.toggle('open');
+  window.goTo = function(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screen).classList.add('active');
+    window.scrollTo(0, 0);
+    if (screen === 'home') updateHomeWidgets();
+    if (screen === 'profile') renderProfiles();
+    if (screen === 'nursing') setNow('feedTime');
+    if (screen === 'sleep') { setNow('sleepStart'); setNow('sleepEnd'); }
+    if (screen === 'solids') setNow('solidsTime');
   }
 
-  window.closeDrawer = function() {
-    document.getElementById('drawer').classList.remove('open');
-    document.getElementById('drawerOverlay').classList.remove('open');
-  }
-
-  window.navigateTo = function(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
-    document.querySelector(`[data-page="${page}"]`).classList.add('active');
-    document.getElementById('pageTitle').textContent = pageTitles[page];
-    closeDrawer();
-  }
-
-  // ---- FORM ----
-  function setNow() {
+  // ---- TIME ----
+  function setNow(id) {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
-    document.getElementById('feedTime').value = new Date(now - offset).toISOString().slice(0, 16);
+    document.getElementById(id).value = new Date(now - offset).toISOString().slice(0, 16);
   }
-  setNow();
 
-  window.selectSide = function(side) {
-    selectedSide = side;
-    document.getElementById('btnLeft').classList.toggle('active', side === 'left');
-    document.getElementById('btnRight').classList.toggle('active', side === 'right');
-    document.getElementById('btnBoth').classList.toggle('active', side === 'both');
-    if (side === 'both') {
-      document.getElementById('singleSideField').classList.add('hidden');
-      document.getElementById('bothSideFields').classList.remove('hidden');
-    } else {
-      document.getElementById('singleSideField').classList.remove('hidden');
-      document.getElementById('bothSideFields').classList.add('hidden');
-      document.getElementById('singleSideLabel').textContent = 'Duration — ' + side + ' side';
+  function timeAgo(date) {
+    const diffMins = Math.floor((new Date() - date) / 60000);
+    const h = Math.floor(diffMins / 60), m = diffMins % 60;
+    if (diffMins < 1) return { display: 'Just now', mins: 0 };
+    if (h === 0) return { display: diffMins + 'm ago', mins: diffMins };
+    return { display: h + 'h ' + m + 'm ago', mins: diffMins };
+  }
+
+  function isToday(str) { return new Date(str).toDateString() === new Date().toDateString(); }
+
+  function formatDT(str) {
+    const d = new Date(str);
+    return { date: d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}), time: d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true}) };
+  }
+
+  // ---- HOME WIDGETS ----
+  function updateHomeWidgets() {
+    const child = getActiveChild();
+    document.getElementById('homeChildName').textContent = child ? child.name : 'Set up profile';
+    document.getElementById('homeAvatar').textContent = child ? child.name[0].toUpperCase() : '?';
+    document.getElementById('homeAvatar').style.background = child ? child.colour : '#4caf7d';
+
+    const today = new Date().toDateString();
+    const dateStr = new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
+    document.getElementById('homeDateStr').textContent = dateStr;
+
+    // Sleep widget
+    const lastSleep = [...allSleep].sort((a,b) => new Date(b.endTime||b.startTime) - new Date(a.endTime||a.startTime))[0];
+    if (lastSleep) {
+      const ago = timeAgo(new Date(lastSleep.endTime || lastSleep.startTime));
+      document.getElementById('widget-sleep-sub').textContent = 'Last woke ' + ago.display;
+    }
+
+    // Nursing widget
+    const lastFeed = [...allFeeds].sort((a,b) => new Date(b.time) - new Date(a.time))[0];
+    if (lastFeed) {
+      const ago = timeAgo(new Date(lastFeed.time));
+      const type = lastFeed.type === 'breast' ? '🤱 Breast' : lastFeed.type === 'pumped' ? '🍼 Pumped' : '🍼 Formula';
+      document.getElementById('widget-nursing-sub').textContent = type + ' · ' + ago.display;
+      if (lastFeed.type !== 'breast') {
+        document.getElementById('widget-bottle-sub').textContent = ago.display;
+      }
+    }
+
+    // Solids widget
+    const lastSolid = [...allSolids].sort((a,b) => new Date(b.time) - new Date(a.time))[0];
+    if (lastSolid) {
+      const ago = timeAgo(new Date(lastSolid.time));
+      document.getElementById('widget-solids-sub').textContent = (lastSolid.food || 'Food') + ' · ' + ago.display;
     }
   }
 
-  window.updateFields = function() {
+  // ---- CHILD PROFILES ----
+  window.addChild = function() {
+    const name = document.getElementById('childName').value.trim();
+    if (!name) { showToast('Please enter a name.'); return; }
+    const child = {
+      id: Date.now().toString(),
+      name,
+      dob: document.getElementById('childDob').value,
+      colour: document.getElementById('childColour').value
+    };
+    children.push(child);
+    if (!activeChildId) activeChildId = child.id;
+    saveChildren();
+    document.getElementById('childName').value = '';
+    renderProfiles();
+    showToast(name + ' added!');
+  }
+
+  window.selectChild = function(id) {
+    activeChildId = id;
+    saveChildren();
+    renderProfiles();
+    updateHomeWidgets();
+    showToast('Switched to ' + getActiveChild()?.name);
+  }
+
+  window.deleteChild = function(id) {
+    if (!confirm('Remove this child?')) return;
+    children = children.filter(c => c.id !== id);
+    if (activeChildId === id) activeChildId = children[0]?.id || null;
+    saveChildren();
+    renderProfiles();
+  }
+
+  function saveChildren() {
+    localStorage.setItem('children', JSON.stringify(children));
+    localStorage.setItem('activeChildId', activeChildId || '');
+  }
+
+  function renderProfiles() {
+    const list = document.getElementById('profileList');
+    if (children.length === 0) {
+      list.innerHTML = '<div class="empty">No children added yet. Add one below!</div>';
+      return;
+    }
+    list.innerHTML = children.map(c => `
+      <div class="profile-card ${c.id === activeChildId ? 'active-child' : ''}">
+        <div class="avatar" style="background:${c.colour};">${c.name[0].toUpperCase()}</div>
+        <div class="profile-card-info">
+          <div class="profile-card-name">${c.name}</div>
+          <div class="profile-card-sub">${c.dob ? 'Born ' + new Date(c.dob).toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}) : 'No DOB set'}</div>
+        </div>
+        <div class="profile-card-actions">
+          <button class="btn-select ${c.id === activeChildId ? 'selected' : ''}" onclick="selectChild('${c.id}')">${c.id === activeChildId ? '✓ Active' : 'Select'}</button>
+          <button class="btn-small-del" onclick="deleteChild('${c.id}')">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ---- NURSING / FEEDS ----
+  window.selectSide = function(side) {
+    selectedSide = side;
+    ['left','right','both'].forEach(s => {
+      document.getElementById('btn' + s.charAt(0).toUpperCase() + s.slice(1)).classList.toggle('active', s === side);
+    });
+    document.getElementById('singleSideField').classList.toggle('hidden', side === 'both');
+    document.getElementById('bothSideFields').classList.toggle('hidden', side !== 'both');
+    if (side !== 'both') document.getElementById('singleSideLabel').textContent = 'Duration — ' + side;
+  }
+
+  window.updateFeedFields = function() {
     const type = document.getElementById('feedType').value;
-    document.getElementById('breastSideSection').classList.toggle('hidden', type !== 'breast');
+    document.getElementById('breastSection').classList.toggle('hidden', type !== 'breast');
     document.getElementById('mlSection').classList.toggle('hidden', type === 'breast');
   }
 
   window.logFeed = async function() {
     const type = document.getElementById('feedType').value;
     const time = document.getElementById('feedTime').value;
-    const who = document.getElementById('whoLogging').value;
+    const who = document.getElementById('nursingWho').value;
     if (!time) { showToast('Please set a date and time.'); return; }
 
-    let feed = { type, time, who, createdAt: serverTimestamp() };
+    let feed = { type, time, who, childId: activeChildId || 'default', createdAt: serverTimestamp() };
 
     if (type === 'breast') {
       if (selectedSide === 'both') {
         const left = parseFloat(document.getElementById('feedAmountLeft').value);
         const right = parseFloat(document.getElementById('feedAmountRight').value);
-        if ((isNaN(left)||left<=0) && (isNaN(right)||right<=0)) { showToast('Please enter at least one duration.'); return; }
-        feed.side = 'both';
-        feed.amountLeft = isNaN(left) ? 0 : left;
-        feed.amountRight = isNaN(right) ? 0 : right;
-        feed.amount = feed.amountLeft + feed.amountRight;
+        if ((isNaN(left)||left<=0) && (isNaN(right)||right<=0)) { showToast('Enter at least one duration.'); return; }
+        feed.side = 'both'; feed.amountLeft = isNaN(left)?0:left; feed.amountRight = isNaN(right)?0:right; feed.amount = feed.amountLeft + feed.amountRight;
       } else {
         const amount = parseFloat(document.getElementById('feedAmount').value);
         if (isNaN(amount)||amount<=0) { showToast('Please enter a duration.'); return; }
-        feed.side = selectedSide;
-        feed.amount = amount;
+        feed.side = selectedSide; feed.amount = amount;
       }
     } else {
       const amount = parseFloat(document.getElementById('feedAmountMl').value);
@@ -404,161 +705,213 @@
       feed.amount = amount;
     }
 
-    const btn = document.getElementById('logBtn');
+    const btn = document.getElementById('feedBtn');
     btn.disabled = true; btn.textContent = 'Saving...';
     try {
       await addDoc(feedsCol, feed);
-      ['feedAmount','feedAmountLeft','feedAmountRight','feedAmountMl'].forEach(id => document.getElementById(id).value = '');
-      setNow();
+      ['feedAmount','feedAmountLeft','feedAmountRight','feedAmountMl'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+      setNow('feedTime');
       showToast('Feed logged!');
-    } catch(e) { showToast('Error saving — check connection.'); console.error(e); }
+    } catch(e) { showToast('Error saving.'); console.error(e); }
     btn.disabled = false; btn.textContent = 'Log feed';
   }
 
-  window.deleteFeed = async function(id) {
-    try { await deleteDoc(doc(db, "feeds", id)); }
-    catch(e) { showToast('Error deleting feed.'); }
+  // ---- SLEEP ----
+  window.logSleep = async function() {
+    const start = document.getElementById('sleepStart').value;
+    const end = document.getElementById('sleepEnd').value;
+    const who = document.getElementById('sleepWho').value;
+    if (!start || !end) { showToast('Please set sleep and wake times.'); return; }
+    if (new Date(end) <= new Date(start)) { showToast('Wake time must be after sleep time.'); return; }
+
+    const durationMins = Math.round((new Date(end) - new Date(start)) / 60000);
+    const sleep = { startTime: start, endTime: end, durationMins, who, childId: activeChildId || 'default', createdAt: serverTimestamp() };
+
+    try {
+      await addDoc(sleepCol, sleep);
+      setNow('sleepStart'); setNow('sleepEnd');
+      showToast('Sleep logged!');
+    } catch(e) { showToast('Error saving.'); }
   }
 
-  window.clearAll = function() { showToast('Use the ✕ button to delete individual feeds.'); }
+  // ---- SOLIDS ----
+  window.logSolids = async function() {
+    const food = document.getElementById('solidsFood').value.trim();
+    const time = document.getElementById('solidsTime').value;
+    const who = document.getElementById('solidsWho').value;
+    if (!food) { showToast('Please enter a food name.'); return; }
+    if (!time) { showToast('Please set a time.'); return; }
 
-  // ---- BANNER ----
-  function timeAgo(date) {
-    const diffMins = Math.floor((new Date() - date) / 60000);
-    const h = Math.floor(diffMins / 60);
-    const m = diffMins % 60;
-    if (diffMins < 1) return { display: 'Just now', mins: 0 };
-    if (h === 0) return { display: diffMins + 'm ago', mins: diffMins };
-    return { display: h + 'h ' + m + 'm ago', mins: diffMins };
+    const amount = parseFloat(document.getElementById('solidsAmount').value);
+    const solid = {
+      food, time, who,
+      amount: isNaN(amount) ? 0 : amount,
+      reaction: document.getElementById('solidsReaction').value,
+      childId: activeChildId || 'default',
+      createdAt: serverTimestamp()
+    };
+
+    try {
+      await addDoc(solidsCol, solid);
+      document.getElementById('solidsFood').value = '';
+      document.getElementById('solidsAmount').value = '';
+      document.getElementById('solidsReaction').value = '';
+      setNow('solidsTime');
+      showToast('Solids logged!');
+    } catch(e) { showToast('Error saving.'); }
   }
 
-  function updateBanner(lastFeed) {
-    const banner = document.getElementById('lastFeedBanner');
-    const title = document.getElementById('bannerTitle');
-    const sub = document.getElementById('bannerSub');
-    const timeEl = document.getElementById('bannerTime');
-    if (!lastFeed) {
-      banner.className = 'last-feed-banner';
-      title.textContent = 'No feeds logged yet';
-      sub.textContent = 'Log your first feed below';
-      timeEl.textContent = '';
-      return;
-    }
-    const feedDate = new Date(lastFeed.time);
-    const ago = timeAgo(feedDate);
-    const who = lastFeed.who ? ' by ' + lastFeed.who : '';
-    const type = lastFeed.type === 'breast' ? 'Breast' : lastFeed.type === 'pumped' ? 'Pumped milk' : 'Formula';
-    timeEl.textContent = ago.display;
-    title.textContent = 'Last feed — ' + type + who;
-    sub.textContent = feedDate.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true });
-    banner.className = 'last-feed-banner' + (ago.mins < 120 ? ' ok' : ago.mins < 180 ? ' warn' : ' alert');
+  // ---- CLEAR ----
+  window.clearSection = function(section) {
+    showToast('Use the ✕ button to delete individual entries.');
   }
 
-  // ---- CHART ----
-  function renderChart(todayFeeds) {
-    const wrap = document.getElementById('chartWrap');
-    if (todayFeeds.length === 0) { wrap.innerHTML = '<div class="chart-empty">No feeds logged today yet</div>'; return; }
-    const hours = Array.from({length:24}, () => ({ breast:0, pumped:0, formula:0, total:0 }));
-    todayFeeds.forEach(f => { const h = new Date(f.time).getHours(); hours[h][f.type]++; hours[h].total++; });
-    const maxTotal = Math.max(...hours.map(h => h.total), 1);
-    const bh = 70;
-    let bars = '', labels = '';
-    for (let i = 0; i < 24; i++) {
-      const h = hours[i];
-      bars += `<div class="chart-bar-col" title="${i}:00 — ${h.total} feed${h.total!==1?'s':''}">`;
-      if (h.formula > 0) bars += `<div class="chart-bar formula" style="height:${(h.formula/maxTotal)*bh}px"></div>`;
-      if (h.pumped > 0) bars += `<div class="chart-bar pumped" style="height:${(h.pumped/maxTotal)*bh}px"></div>`;
-      if (h.breast > 0) bars += `<div class="chart-bar breast" style="height:${(h.breast/maxTotal)*bh}px"></div>`;
-      if (h.total === 0) bars += `<div style="height:2px;background:var(--border);border-radius:1px;"></div>`;
-      bars += `</div>`;
-      const lbl = i===0?'12a':i<12?i+'a':i===12?'12p':(i-12)+'p';
-      labels += `<div class="chart-label">${i%4===0?lbl:''}</div>`;
-    }
-    wrap.innerHTML = `<div class="chart-hours">${bars}</div><div class="chart-labels">${labels}</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot breast"></div>Breast</div><div class="legend-item"><div class="legend-dot pumped"></div>Pumped</div><div class="legend-item"><div class="legend-dot formula"></div>Formula</div></div>`;
+  window.deleteEntry = async function(col, id) {
+    try {
+      await deleteDoc(doc(db, col, id));
+    } catch(e) { showToast('Error deleting.'); }
   }
 
-  // ---- RENDER ----
-  function isToday(str) { return new Date(str).toDateString() === new Date().toDateString(); }
-  function typeLabel(f) { return f.type==='pumped'?'Pumped milk':f.type==='formula'?'Formula':'Breast'; }
-  function sideLabel(f) { if(f.type!=='breast')return null; return f.side==='both'?'both sides':f.side+' side'; }
-  function formatAmt(f) {
-    if(f.type!=='breast') return f.amount+' ml';
-    if(f.side==='both') { let p=[]; if(f.amountLeft>0)p.push('L: '+f.amountLeft+' min'); if(f.amountRight>0)p.push('R: '+f.amountRight+' min'); return p.join(' · ')+' ('+f.amount+' min total)'; }
-    return f.amount+' min';
-  }
-  function formatDateTime(str) {
-    const d = new Date(str);
-    return { date: d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}), time: d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true}) };
-  }
-
-  function renderFeeds(feeds) {
-    allFeeds = feeds;
-    const sortedByTime = [...feeds].sort((a,b) => new Date(b.time) - new Date(a.time));
-    const lastFeed = sortedByTime[0] || null;
+  // ---- RENDER HELPERS ----
+  function renderNursing(feeds) {
+    const sorted = [...feeds].sort((a,b) => new Date(b.time) - new Date(a.time));
+    const lastFeed = sorted[0] || null;
     const todayFeeds = feeds.filter(f => isToday(f.time));
 
-    updateBanner(lastFeed);
-    renderChart(todayFeeds);
-
-    const ml = todayFeeds.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0);
-    const min = todayFeeds.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0);
-
-    // Home stats
-    document.getElementById('totalFeeds').textContent = todayFeeds.length;
-    document.getElementById('totalMl').textContent = ml + ' ml';
-    document.getElementById('totalMin').textContent = min + ' min';
-
-    // Summary page stats
-    document.getElementById('totalFeeds2').textContent = todayFeeds.length;
-    document.getElementById('totalMl2').textContent = ml + ' ml';
-    document.getElementById('totalMin2').textContent = min + ' min';
-
-    // History list
-    const list = document.getElementById('logList');
-    if (feeds.length === 0) {
-      list.innerHTML = '<div class="empty"><div class="empty-icon">🍼</div>No feeds logged yet.<br>Go to Home to add your first one.</div>';
-    } else {
-      list.innerHTML = sortedByTime.map(f => {
-        const dt = formatDateTime(f.time);
-        const side = sideLabel(f);
-        return `<div class="log-item">
-          <div class="log-dot ${f.type}"></div>
-          <div class="log-info">
-            <div class="log-type-row">
-              <span class="log-type">${typeLabel(f)}</span>
-              ${side?`<span class="badge breast">${side}</span>`:`<span class="badge ${f.type}">${f.type==='pumped'?'pumped':'formula'}</span>`}
-              ${f.who?`<span class="badge who">${f.who}</span>`:''}
-            </div>
-            <div class="log-amount">${formatAmt(f)}</div>
-          </div>
-          <div class="log-time">${dt.date}<br>${dt.time}</div>
-          <button class="btn-del" onclick="deleteFeed('${f.id}')">&#x2715;</button>
-        </div>`;
-      }).join('');
+    // Banner
+    const banner = document.getElementById('nursingBanner');
+    if (lastFeed) {
+      const ago = timeAgo(new Date(lastFeed.time));
+      const who = lastFeed.who ? ' by ' + lastFeed.who : '';
+      const type = lastFeed.type === 'breast' ? 'Breast' : lastFeed.type === 'pumped' ? 'Pumped' : 'Formula';
+      document.getElementById('nursingBannerTitle').textContent = 'Last feed — ' + type + who;
+      document.getElementById('nursingBannerSub').textContent = new Date(lastFeed.time).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true});
+      document.getElementById('nursingBannerTime').textContent = ago.display;
+      banner.className = 'last-banner ' + (ago.mins < 120 ? 'nursing-ok' : ago.mins < 180 ? 'nursing-warn' : 'nursing-alert');
     }
+
+    // Stats
+    document.getElementById('nursingCount').textContent = todayFeeds.length;
+    document.getElementById('nursingMl').textContent = todayFeeds.filter(f=>f.type!=='breast').reduce((s,f)=>s+f.amount,0) + 'ml';
+    document.getElementById('nursingMin').textContent = todayFeeds.filter(f=>f.type==='breast').reduce((s,f)=>s+f.amount,0) + 'm';
+
+    // List
+    const list = document.getElementById('nursingList');
+    if (sorted.length === 0) { list.innerHTML = '<div class="empty">No feeds logged yet.</div>'; return; }
+    list.innerHTML = sorted.map(f => {
+      const dt = formatDT(f.time);
+      const type = f.type==='breast'?'Breast':f.type==='pumped'?'Pumped':'Formula';
+      const amt = f.type==='breast'?(f.side==='both'?`L:${f.amountLeft}m R:${f.amountRight}m (${f.amount}m total)`:f.amount+'m on '+f.side):f.amount+'ml';
+      return `<div class="log-item">
+        <div class="log-dot nursing"></div>
+        <div class="log-info">
+          <div class="log-type">${type}${f.side&&f.type==='breast'?`<span class="badge badge-nursing">${f.side==='both'?'both':f.side}</span>`:''}</div>
+          <div class="log-amount">${amt}${f.who?` · ${f.who}`:''}</div>
+        </div>
+        <div class="log-time">${dt.date}<br>${dt.time}</div>
+        <button class="btn-del" onclick="deleteEntry('feeds','${f.id}')">✕</button>
+      </div>`;
+    }).join('');
   }
 
-  setInterval(() => {
-    if (allFeeds.length > 0) {
-      const sorted = [...allFeeds].sort((a,b) => new Date(b.time) - new Date(a.time));
-      updateBanner(sorted[0]);
-    }
-  }, 60000);
+  function renderSleep(sleeps) {
+    const sorted = [...sleeps].sort((a,b) => new Date(b.endTime||b.startTime) - new Date(a.endTime||a.startTime));
+    const lastSleep = sorted[0] || null;
+    const todaySleeps = sleeps.filter(s => isToday(s.endTime || s.startTime));
 
-  const q = query(feedsCol, orderBy("createdAt", "desc"));
-  onSnapshot(q, snapshot => {
+    if (lastSleep) {
+      const ago = timeAgo(new Date(lastSleep.endTime || lastSleep.startTime));
+      document.getElementById('sleepBannerTitle').textContent = 'Last woke up';
+      document.getElementById('sleepBannerSub').textContent = 'Slept ' + Math.floor(lastSleep.durationMins/60) + 'h ' + (lastSleep.durationMins%60) + 'm';
+      document.getElementById('sleepBannerTime').textContent = ago.display;
+    }
+
+    document.getElementById('sleepCount').textContent = todaySleeps.length;
+    const totalMins = todaySleeps.reduce((s,sl) => s + (sl.durationMins||0), 0);
+    document.getElementById('sleepTotal').textContent = Math.floor(totalMins/60) + 'h ' + (totalMins%60) + 'm';
+    document.getElementById('sleepLast').textContent = lastSleep ? Math.floor(lastSleep.durationMins/60) + 'h ' + (lastSleep.durationMins%60) + 'm' : '—';
+
+    const list = document.getElementById('sleepList');
+    if (sorted.length === 0) { list.innerHTML = '<div class="empty">No sleep logged yet.</div>'; return; }
+    list.innerHTML = sorted.map(s => {
+      const start = formatDT(s.startTime);
+      const end = s.endTime ? formatDT(s.endTime) : null;
+      return `<div class="log-item">
+        <div class="log-dot sleep"></div>
+        <div class="log-info">
+          <div class="log-type">Sleep · ${Math.floor(s.durationMins/60)}h ${s.durationMins%60}m</div>
+          <div class="log-amount">${start.time} → ${end?end.time:'ongoing'}${s.who?' · '+s.who:''}</div>
+        </div>
+        <div class="log-time">${start.date}</div>
+        <button class="btn-del" onclick="deleteEntry('sleep','${s.id}')">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  function renderSolids(solids) {
+    const sorted = [...solids].sort((a,b) => new Date(b.time) - new Date(a.time));
+    const lastSolid = sorted[0] || null;
+    const todaySolids = solids.filter(s => isToday(s.time));
+
+    if (lastSolid) {
+      const ago = timeAgo(new Date(lastSolid.time));
+      document.getElementById('solidsBannerTitle').textContent = lastSolid.food + (lastSolid.who ? ' · ' + lastSolid.who : '');
+      document.getElementById('solidsBannerSub').textContent = lastSolid.reaction || '';
+      document.getElementById('solidsBannerTime').textContent = ago.display;
+    }
+
+    document.getElementById('solidsCount').textContent = todaySolids.length;
+    document.getElementById('solidsGrams').textContent = todaySolids.reduce((s,sl)=>s+(sl.amount||0),0) + 'g';
+    document.getElementById('solidsFoods').textContent = lastSolid ? lastSolid.food.split(' ')[0] : '—';
+
+    const list = document.getElementById('solidsList');
+    if (sorted.length === 0) { list.innerHTML = '<div class="empty">No solids logged yet.</div>'; return; }
+    list.innerHTML = sorted.map(s => {
+      const dt = formatDT(s.time);
+      return `<div class="log-item">
+        <div class="log-dot solids"></div>
+        <div class="log-info">
+          <div class="log-type">${s.food}</div>
+          <div class="log-amount">${s.amount?s.amount+'g · ':''}${s.reaction||''}${s.who?' · '+s.who:''}</div>
+        </div>
+        <div class="log-time">${dt.date}<br>${dt.time}</div>
+        <button class="btn-del" onclick="deleteEntry('solids','${s.id}')">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  // ---- FIREBASE LISTENERS ----
+  onSnapshot(query(feedsCol, orderBy("createdAt","desc")), snap => {
     document.getElementById('syncDot').classList.add('live');
-    renderFeeds(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-  }, err => {
-    document.getElementById('syncDot').classList.remove('live');
-    document.getElementById('logList').innerHTML = '<div class="loading">Connection error. Please refresh.</div>';
+    allFeeds = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderNursing(allFeeds);
+    updateHomeWidgets();
+  }, err => { document.getElementById('syncDot').classList.remove('live'); });
+
+  onSnapshot(query(sleepCol, orderBy("createdAt","desc")), snap => {
+    allSleep = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderSleep(allSleep);
+    updateHomeWidgets();
   });
+
+  onSnapshot(query(solidsCol, orderBy("createdAt","desc")), snap => {
+    allSolids = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderSolids(allSolids);
+    updateHomeWidgets();
+  });
+
+  // ---- INIT ----
+  updateHomeWidgets();
+  setNow('feedTime');
+  setNow('sleepStart');
+  setNow('sleepEnd');
+  setNow('solidsTime');
 
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+    setTimeout(() => t.classList.remove('show'), 2500);
   }
 </script>
 </body>
